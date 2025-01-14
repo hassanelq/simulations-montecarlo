@@ -13,7 +13,7 @@ const Footer = () => (
             target="_blank"
             rel="noopener noreferrer"
           >
-            Hassan
+            Hassan EL QADI
           </a>
           .
         </p>

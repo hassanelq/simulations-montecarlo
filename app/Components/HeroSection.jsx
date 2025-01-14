@@ -23,7 +23,7 @@ export default function Hero() {
             </NavLink>
             <NavLink
               target="_blank"
-              href="https://github.com/your-simulations-repo"
+              href="https://github.com/hassanelq/Simulations-MC-BrownMotion"
               className="text-gray-700 border hover:bg-gray-50"
               scroll={false}
             >

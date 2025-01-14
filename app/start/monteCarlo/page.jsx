@@ -1,11 +1,17 @@
 "use client";
 
 import React, { useState, useCallback } from "react";
-import { Line, Bar } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
+
 import "chart.js/auto";
 import Button from "../../Components/ui/button";
 import LoadingDots from "../../Components/ui/LoadingDots";
-import { runMonteCarloSimulation } from "../../../utils/monteCarlo";
+import {
+  monteCarloInvestment,
+  monteCarloOption,
+  monteCarloCashFlow,
+} from "../../../utils/monteCarlo";
+import DistributionBars from "../../../utils/Distribution";
 
 export default function MonteCarloPage() {
   const [simulationType, setSimulationType] = useState(null);
@@ -24,28 +30,29 @@ export default function MonteCarloPage() {
       case "investment":
         return {
           initialInvestment: 10000,
-          annualReturn: 5,
+          annualReturn: 7,
           annualVolatility: 15,
           timeHorizon: 30,
           numSimulations: 1000,
           annualContribution: 1000,
-          annualWithdrawalRate: 4,
+          withdrawalRate: 0,
           investmentGoal: 50000,
         };
       case "options":
         return {
           stockPrice: 100,
-          strikePrice: 100,
-          timeToMaturity: 1,
-          riskFreeRate: 2,
+          strikePrice: 110,
+          riskFreeRate: 5,
           volatility: 20,
+          timeToMaturity: 1,
           numSimulations: 1000,
         };
       case "cashflow":
         return {
-          initialCashflow: 10000,
-          annualGrowthRate: 5,
-          annualVolatility: 10,
+          annualRevenue: 100000,
+          annualCost: 80000,
+          revenueVolatility: 10,
+          costVolatility: 5,
           timeHorizon: 10,
           numSimulations: 1000,
         };
@@ -64,24 +71,18 @@ export default function MonteCarloPage() {
   const runSimulation = useCallback(() => {
     setIsLoading(true);
     setTimeout(() => {
-      const simulations = runMonteCarloSimulation({ simulationType, inputs });
-      setResults(simulations);
+      let simulationResults;
+      if (simulationType === "investment") {
+        simulationResults = monteCarloInvestment(inputs);
+      } else if (simulationType === "options") {
+        simulationResults = monteCarloOption(inputs);
+      } else if (simulationType === "cashflow") {
+        simulationResults = monteCarloCashFlow(inputs);
+      }
+      setResults(simulationResults);
       setIsLoading(false);
     }, 1000);
   }, [simulationType, inputs]);
-
-  const getChartData = () => {
-    if (!results) return null;
-    return {
-      labels: Array.from({ length: inputs.timeHorizon + 1 }, (_, i) => i),
-      datasets: results.trajectories.slice(0, 10).map((trajectory, index) => ({
-        label: `Simulation ${index + 1}`,
-        data: trajectory,
-        borderColor: `rgba(0, 123, 255, 0.${index + 2})`,
-        fill: false,
-      })),
-    };
-  };
 
   return (
     <div className="h-fit px-4 lg:px-10 py-10 flex flex-col gap-10 bg-gray-50">
@@ -89,8 +90,9 @@ export default function MonteCarloPage() {
       <div className="text-center max-w-4xl mx-auto">
         <h1 className="text-3xl font-extrabold mb-4">Monte Carlo Simulation</h1>
         <p className="text-gray-600">
-          Monte Carlo simulations allow you to explore a range of outcomes for
-          different scenarios. Choose a simulation type to get started.
+          Monte Carlo simulations are used to predict outcomes in uncertain
+          scenarios. Choose a simulation type and configure parameters to
+          analyze results.
         </p>
       </div>
 
@@ -102,19 +104,19 @@ export default function MonteCarloPage() {
             {
               title: "Simulation d'Investissement",
               description:
-                "Model future portfolio performance with random returns under market scenarios.",
+                "Evaluate future portfolio performance under random market scenarios.",
               type: "investment",
             },
             {
               title: "Simulation des Prix d’Options",
               description:
-                "Analyze option pricing based on volatility and underlying asset movements.",
+                "Analyze option pricing based on asset trajectories.",
               type: "options",
             },
             {
               title: "Simulation des Flux de Trésorerie",
               description:
-                "Forecast cash flow growth and variability for financial planning.",
+                "Predict financial project viability by modeling revenue and cost uncertainty.",
               type: "cashflow",
             },
           ].map((sim, index) => (
@@ -179,15 +181,33 @@ export default function MonteCarloPage() {
               <>
                 <h4 className="text-lg font-semibold mb-2">Summary</h4>
                 <ul className="text-gray-700 mb-4">
-                  <li>Average Final Value: {results.averageFinalValue} €</li>
-                  <li>Median Final Value: {results.medianFinalValue} €</li>
-                  <li>5th Percentile: {results.percentile5} €</li>
-                  <li>95th Percentile: {results.percentile95} €</li>
+                  {Object.entries(results.summary).map(([key, value]) => (
+                    <li key={key}>
+                      {key}: {value}
+                    </li>
+                  ))}
                 </ul>
-                <h4 className="text-lg font-semibold mb-2">
-                  Portfolio Trajectories
-                </h4>
-                <Line data={getChartData()} />
+
+                {simulationType === "investment" && (
+                  <>
+                    <DistributionBars
+                      values={results.distribution.values}
+                      label="Distribution des Valeurs Finales de l'Investissement"
+                    />
+                    <div className="mt-6">
+                      <Line data={results.graph} />
+                    </div>
+                  </>
+                )}
+                {simulationType === "options" && results.graph && (
+                  <div className="mt-6"></div>
+                )}
+                {simulationType === "cashflow" && (
+                  <DistributionBars
+                    values={results.distribution.values}
+                    label="Distribution des Flux de Trésorerie"
+                  />
+                )}
               </>
             ) : (
               <p className="text-gray-500">
