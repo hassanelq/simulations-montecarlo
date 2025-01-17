@@ -34,6 +34,6 @@ Welcome to the Financial Simulation Platform, a powerful and interactive tool de
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/your-username/financial-simulation-platform.git
+   git clone https://github.com/your-username//Simulations-MC-BrownMotion.git
    cd financial-simulation-platform
    ```
