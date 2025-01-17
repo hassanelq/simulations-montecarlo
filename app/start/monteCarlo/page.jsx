@@ -17,9 +17,24 @@ const MonteCarloPage = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const simulationTypes = [
-    { title: "Investment Simulation", type: "investment" },
-    { title: "Options Pricing", type: "options" },
-    { title: "Risk Analysis", type: "risk" },
+    {
+      title: "Investment Simulation",
+      type: "investment",
+      description:
+        "Simulate the growth of an investment portfolio over time, accounting for market volatility and annual contributions.",
+    },
+    {
+      title: "Options Pricing",
+      type: "options",
+      description:
+        "Estimate the fair value of financial options using the Monte Carlo method by simulating asset price paths.",
+    },
+    {
+      title: "Risk Analysis",
+      type: "risk",
+      description:
+        "Analyze potential losses in a portfolio by calculating Value at Risk (VaR) using Monte Carlo simulations.",
+    },
   ];
 
   const defaultInputs = {
@@ -73,14 +88,38 @@ const MonteCarloPage = () => {
 
   return (
     <div className="min-h-screen px-4 py-10 flex flex-col gap-10 bg-gray-50">
+      {/* Monte Carlo Introduction */}
       <div className="text-center max-w-4xl mx-auto">
         <h1 className="text-3xl font-extrabold mb-4">
           Monte Carlo Simulations
         </h1>
-        <p className="text-gray-600">
-          Select a simulation type and customize parameters to analyze outcomes.
+        <p className="text-gray-600 mb-6">
+          Monte Carlo simulations are a powerful method to model and predict
+          outcomes in uncertain environments. By running thousands of random
+          simulations, we can estimate probabilities, assess risk, and calculate
+          potential outcomes. The method relies on repeated random sampling and
+          can be applied to a wide range of financial scenarios.
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+        <div className="text-left bg-blue-50 p-4 rounded-lg shadow-md">
+          <h2 className="text-lg font-bold mb-2">How It Works:</h2>
+          <ol className="list-decimal list-inside text-gray-700 space-y-2">
+            <li>Define the scenario and parameters to model.</li>
+            <li>
+              Generate thousands of random samples based on probability
+              distributions.
+            </li>
+            <li>
+              Aggregate the results to gain insights into probabilities and
+              risks.
+            </li>
+          </ol>
+        </div>
+      </div>
+
+      {/* Simulation Type Selection */}
+      <div className="text-center max-w-4xl mx-auto">
+        <h2 className="text-2xl font-bold mb-4">Choose a Simulation Type</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {simulationTypes.map((sim, index) => (
             <button
               key={index}
@@ -91,14 +130,17 @@ const MonteCarloPage = () => {
                   : "bg-white"
               }`}
             >
-              <h3 className="text-lg font-bold">{sim.title}</h3>
+              <h3 className="text-lg font-bold mb-2">{sim.title}</h3>
+              <p className="text-gray-600">{sim.description}</p>
             </button>
           ))}
         </div>
       </div>
 
+      {/* Inputs and Results */}
       {simulationType && (
         <div className="flex flex-col md:flex-row gap-6">
+          {/* Inputs Section */}
           <div className="md:w-1/3 bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-xl font-bold mb-4">Input Parameters</h3>
             <InputsForm
@@ -114,6 +156,7 @@ const MonteCarloPage = () => {
               {isLoading ? <LoadingDots color="white" /> : "Run Simulation"}
             </button>
           </div>
+          {/* Results Section */}
           <div className="md:w-2/3 bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-xl font-bold mb-4">Simulation Results</h3>
             {isLoading ? (
