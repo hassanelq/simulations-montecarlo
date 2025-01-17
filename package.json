@@ -9,10 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@lottiefiles/react-lottie-player": "^3.6.0",
     "chart.js": "^4.4.7",
     "cls": "^0.1.5",
     "clsx": "^2.1.1",
     "lodash": "^4.17.21",
+    "lottie-react": "^2.4.0",
     "next": "15.0.2",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
