@@ -5,8 +5,8 @@ import NavLink from "../Components/ui/NavLink";
 export default function StartPage() {
   const simulations = [
     {
-      title: "Lois de Probabilité",
-      path: "/start/loisdeprobabilite",
+      title: "Probability Distributions",
+      path: "/start/probability",
       description:
         "Explore probability distributions and their applications in real-world scenarios.",
       icon: "🎲",
@@ -19,7 +19,7 @@ export default function StartPage() {
       icon: "📊",
     },
     {
-      title: "Mouvement Brownien",
+      title: "Brownian Motion",
       path: "/start/brownianmotion",
       description:
         "Dive into stochastic processes and Brownian motion with interactive simulations.",
