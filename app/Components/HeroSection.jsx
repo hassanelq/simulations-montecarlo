@@ -1,6 +1,5 @@
-"use client";
 import NavLink from "./ui/NavLink";
-import { Player } from "@lottiefiles/react-lottie-player";
+import LottieAnimation from "./ui/LootieAnimation";
 
 export default function Hero() {
   return (
@@ -9,12 +8,7 @@ export default function Hero() {
         <div className="space-y-8 max-w-4xl mx-auto">
           {/* Lottie Animation */}
           <div className="flex justify-center">
-            <Player
-              autoplay
-              loop
-              src="/Animations/Animation1.json" // Replace with the path to your Lottie JSON file
-              className="w-2/3 sm:w-2/2" // Adjust size for responsiveness
-            />
+            <LottieAnimation />
           </div>
 
           {/* Hero Content */}
