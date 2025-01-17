@@ -1,11 +1,16 @@
 "use client";
 import NavLink from "./ui/NavLink";
-import LottieAnimation from "./ui/LootieAnimation";
+import dynamic from "next/dynamic";
+
+// Dynamically import LottieAnimation
+const LottieAnimation = dynamic(() => import("./ui/LootieAnimation"), {
+  ssr: false, // Disable SSR
+});
 
 export default function Hero() {
   return (
     <section>
-      <div className="custom-screen  text-gray-600 text-center flex flex-col gap-14 pt-14">
+      <div className="custom-screen text-gray-600 text-center flex flex-col gap-14 pt-14">
         <div className="space-y-8 max-w-4xl mx-auto">
           {/* Lottie Animation */}
           <div className="flex justify-center">
@@ -25,7 +30,7 @@ export default function Hero() {
             <div className="flex items-center justify-center gap-x-3 font-medium text-sm">
               <NavLink
                 href="/start"
-                className="text-white bg-gray-800 hover:bg-gray-600 active:bg-gray-900 "
+                className="text-white bg-gray-800 hover:bg-gray-600 active:bg-gray-900"
               >
                 Start Simulations
               </NavLink>
