@@ -29,6 +29,8 @@ const MonteCarloPage = () => {
       annualVolatility: 15,
       timeHorizon: 30,
       annualContribution: 1000,
+      investmentGoal: 50000,
+      numSimulations: 1000,
     },
     options: {
       stockPrice: 100,
@@ -36,12 +38,14 @@ const MonteCarloPage = () => {
       riskFreeRate: 5,
       volatility: 20,
       timeToMaturity: 1,
+      numSimulations: 1000,
     },
     risk: {
       portfolioValue: 100000,
       expectedReturn: 8,
       volatility: 12,
       timeHorizon: 1,
+      numSimulations: 1000,
     },
   };
 
@@ -69,7 +73,6 @@ const MonteCarloPage = () => {
 
   return (
     <div className="min-h-screen px-4 py-10 flex flex-col gap-10 bg-gray-50">
-      {/* Simulation Type Selection */}
       <div className="text-center max-w-4xl mx-auto">
         <h1 className="text-3xl font-extrabold mb-4">
           Monte Carlo Simulations
@@ -94,10 +97,8 @@ const MonteCarloPage = () => {
         </div>
       </div>
 
-      {/* Inputs and Results */}
       {simulationType && (
         <div className="flex flex-col md:flex-row gap-6">
-          {/* Inputs Section */}
           <div className="md:w-1/3 bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-xl font-bold mb-4">Input Parameters</h3>
             <InputsForm
@@ -113,8 +114,6 @@ const MonteCarloPage = () => {
               {isLoading ? <LoadingDots color="white" /> : "Run Simulation"}
             </button>
           </div>
-
-          {/* Results Section */}
           <div className="md:w-2/3 bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-xl font-bold mb-4">Simulation Results</h3>
             {isLoading ? (

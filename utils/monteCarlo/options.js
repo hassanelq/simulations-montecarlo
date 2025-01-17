@@ -3,14 +3,20 @@ function mean(array) {
 }
 
 export default function monteCarloOptions(inputs) {
-  const { stockPrice, strikePrice, riskFreeRate, volatility, timeToMaturity } =
-    inputs;
+  const {
+    stockPrice,
+    strikePrice,
+    riskFreeRate,
+    volatility,
+    timeToMaturity,
+    numSimulations = 1000,
+  } = inputs;
 
   const optionPayoffs = [];
   const trajectories = [];
   const dt = timeToMaturity;
 
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < numSimulations; i++) {
     const randomShock = (Math.random() - 0.5) * volatility;
     const endStockPrice =
       stockPrice *

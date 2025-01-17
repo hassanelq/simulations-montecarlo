@@ -9,18 +9,20 @@ export default function monteCarloInvestment(inputs) {
     annualVolatility,
     timeHorizon,
     annualContribution,
+    investmentGoal,
+    numSimulations,
   } = inputs;
 
   const trajectories = [];
   const finalValues = [];
 
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < numSimulations; i++) {
     let portfolio = initialInvestment;
     const trajectory = [portfolio];
 
     for (let year = 1; year <= timeHorizon; year++) {
-      const randomShock = (Math.random() - 0.5) * (annualVolatility / 100); // Adjusted random shock
-      portfolio *= 1 + (annualReturn / 100 + randomShock);
+      const randomShock = (Math.random() - 0.5) * annualVolatility;
+      portfolio *= 1 + (annualReturn + randomShock) / 100;
       portfolio += annualContribution;
       trajectory.push(portfolio);
     }
@@ -29,7 +31,16 @@ export default function monteCarloInvestment(inputs) {
     finalValues.push(portfolio);
   }
 
+  const probabilityToReachGoal =
+    (finalValues.filter((value) => value >= investmentGoal).length /
+      numSimulations) *
+    100;
+
   return {
+    summary: {
+      "Average Final Value": mean(finalValues).toFixed(2),
+      "Probability to Reach Target": `${probabilityToReachGoal.toFixed(2)}%`,
+    },
     graph: {
       labels: Array.from({ length: timeHorizon + 1 }, (_, i) => i),
       datasets: trajectories.slice(0, 10).map((data, idx) => ({
@@ -40,10 +51,5 @@ export default function monteCarloInvestment(inputs) {
       })),
     },
     distribution: finalValues,
-    summary: {
-      "Average Final Value": mean(finalValues).toFixed(2),
-      "Min Final Value": Math.min(...finalValues).toFixed(2),
-      "Max Final Value": Math.max(...finalValues).toFixed(2),
-    },
   };
 }

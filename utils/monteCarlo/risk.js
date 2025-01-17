@@ -1,9 +1,19 @@
+function mean(array) {
+  return array.reduce((a, b) => a + b, 0) / array.length;
+}
+
 export default function monteCarloRisk(inputs) {
-  const { portfolioValue, expectedReturn, volatility, timeHorizon } = inputs;
+  const {
+    portfolioValue,
+    expectedReturn,
+    volatility,
+    timeHorizon,
+    numSimulations = 1000,
+  } = inputs;
 
   const losses = [];
 
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < numSimulations; i++) {
     const randomShock = (Math.random() - 0.5) * volatility;
     const endingValue =
       portfolioValue *
@@ -22,6 +32,7 @@ export default function monteCarloRisk(inputs) {
 
   return {
     summary: {
+      "Mean Loss": mean(losses).toFixed(2),
       "VaR 95%": var95.toFixed(2),
       "VaR 99%": var99.toFixed(2),
     },

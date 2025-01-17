@@ -10,6 +10,8 @@ const InputsForm = ({ inputs, setInputs, type }) => {
       annualVolatility: "Annual Volatility (%)",
       timeHorizon: "Time Horizon (years)",
       annualContribution: "Annual Contribution",
+      investmentGoal: "Target Investment Value",
+      numSimulations: "Number of Simulations",
     },
     options: {
       stockPrice: "Stock Price",
@@ -17,12 +19,14 @@ const InputsForm = ({ inputs, setInputs, type }) => {
       riskFreeRate: "Risk-Free Rate (%)",
       volatility: "Volatility (%)",
       timeToMaturity: "Time to Maturity (years)",
+      numSimulations: "Number of Simulations",
     },
     risk: {
       portfolioValue: "Portfolio Value",
       expectedReturn: "Expected Return (%)",
       volatility: "Volatility (%)",
       timeHorizon: "Time Horizon (years)",
+      numSimulations: "Number of Simulations",
     },
   };
 
@@ -38,7 +42,7 @@ const InputsForm = ({ inputs, setInputs, type }) => {
           <label className="block font-medium">{label}</label>
           <input
             type="number"
-            value={inputs[key] || 0} // Fallback to 0
+            value={inputs[key] || 0} // Default to 0
             onChange={(e) =>
               setInputs((prev) => ({
                 ...prev,
