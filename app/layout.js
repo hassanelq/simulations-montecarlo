@@ -9,8 +9,8 @@ const inter = Inter({ subsets: ["latin"] });
 let title = "Simulations Hub - Monte Carlo, Brownian Motion & More";
 let description =
   "Explore advanced simulations, including Monte Carlo, Brownian Motion, and Portfolio Income Analysis.";
-let url = "https://www.simulations-hub.com";
-let ogimage = "https://www.simulations-hub.com/og-image.png";
+let url = "https://simulations-mc.vercel.app/";
+let ogimage = "/images/ogimage.png";
 let sitename = "Simulations Hub";
 
 export const metadata = {
