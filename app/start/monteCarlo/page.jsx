@@ -85,7 +85,7 @@ export default function MonteCarloPage() {
   }, [simulationType, inputs]);
 
   return (
-    <div className="h-fit px-4 lg:px-10 py-10 flex flex-col gap-10 bg-gray-50">
+    <div className="min-h-[85vh] px-4 lg:px-10 py-10 flex flex-col gap-10 bg-gray-50">
       {/* Explanation Section */}
       <div className="text-center max-w-4xl mx-auto">
         <h1 className="text-3xl font-extrabold mb-4">Monte Carlo Simulation</h1>

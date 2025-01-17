@@ -28,7 +28,7 @@ export default function StartPage() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 py-12 px-6">
+    <div className="min-h-[85vh] flex flex-col items-center justify-center bg-gray-50 py-12 px-6">
       <h1 className="text-4xl font-extrabold text-gray-800 mb-8 text-center">
         Choose a Simulation
       </h1>
