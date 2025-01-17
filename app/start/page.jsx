@@ -20,7 +20,7 @@ export default function StartPage() {
     },
     {
       title: "Brownian Motion",
-      path: "/start/brownianmotion",
+      path: "/start/brownianMotion",
       description:
         "Dive into stochastic processes and Brownian motion with interactive simulations.",
       icon: "🌊",
