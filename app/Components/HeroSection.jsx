@@ -20,12 +20,14 @@ export default function Hero() {
           {/* Hero Content */}
           <div className="space-y-5">
             <h1 className="text-4xl text-gray-800 font-extrabold mx-auto sm:text-6xl">
-              Explore Advanced Simulations Instantly
+              Welcome to Our Financial Simulation Platform
             </h1>
             <p className="max-w-xl mx-auto">
-              Dive into powerful simulations, including Monte Carlo, Brownian
-              Motion, and Portfolio Income Analysis. Gain insights in seconds
-              for free!
+              Discover a powerful and interactive tool designed to help you
+              explore quantitative finance concepts. Simulate financial models,
+              including Normal Distributions, Brownian Motion, and Monte Carlo
+              simulations, to better understand market dynamics and asset
+              behavior.
             </p>
             <div className="flex items-center justify-center gap-x-3 font-medium text-sm">
               <NavLink
