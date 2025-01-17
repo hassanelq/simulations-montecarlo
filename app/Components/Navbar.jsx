@@ -14,14 +14,18 @@ const Navbar = () => {
   const pathname = usePathname();
 
   useEffect(() => {
-    // Close the menu when navigating
-    document.body.classList.remove("overflow-hidden");
-    setMenuOpen(false);
-  }, [pathname]); // Remove useSearchParams dependency
+    if (typeof document !== "undefined") {
+      // Close the menu when navigating
+      document.body.classList.remove("overflow-hidden");
+      setMenuOpen(false);
+    }
+  }, [pathname]); // Ensure SSR-safe usage
 
   const toggleMenu = () => {
-    setMenuOpen((prevState) => !prevState);
-    document.body.classList.toggle("overflow-hidden", !menuOpen);
+    if (typeof document !== "undefined") {
+      setMenuOpen((prevState) => !prevState);
+      document.body.classList.toggle("overflow-hidden", !menuOpen);
+    }
   };
 
   return (
