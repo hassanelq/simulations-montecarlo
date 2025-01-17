@@ -1,10 +1,12 @@
+"use client";
+
 import NavLink from "./ui/NavLink";
-import LottieAnimation from "./ui/LootieAnimation";
+import LottieAnimation from "./ui/LottieAnimation";
 
 export default function Hero() {
   return (
     <section>
-      <div className="custom-screen  text-gray-600 text-center flex flex-col gap-12 pt-6">
+      <div className="custom-screen text-gray-600 text-center flex flex-col gap-14 pt-14">
         <div className="space-y-8 max-w-4xl mx-auto">
           {/* Lottie Animation */}
           <div className="flex justify-center">
