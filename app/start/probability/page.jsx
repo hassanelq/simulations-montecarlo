@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import ProbabilityBarChart from "../../Components/Charts/ProbabilityBarChart";
-import ProbabilityLineChart from "../../Components/Charts/ProbabilityLineChart";
 import LoadingDots from "../../Components/ui/LoadingDots";
 
 const distributions = [
@@ -39,14 +38,6 @@ const defaultInputs = {
   exponential: { lambda: 1, N: 1000 },
   poisson: { lambda: 1, N: 1000 },
   binomial: { n: 10, p: 0.5, N: 1000 },
-};
-
-const chartTypeConfig = {
-  normal: "line",
-  uniform: "line",
-  exponential: "line",
-  poisson: "bar",
-  binomial: "bar",
 };
 
 const ProbabilityDistributionsPage = () => {
@@ -146,17 +137,17 @@ const ProbabilityDistributionsPage = () => {
                 <h4 className="text-lg font-semibold mb-4">
                   {results.description}
                 </h4>
-                {chartTypeConfig[distributionType] === "line" ? (
-                  <ProbabilityLineChart
-                    data={results.data}
-                    labels={results.data.map((_, index) => index)}
-                  />
-                ) : (
-                  <ProbabilityBarChart
-                    data={results.data}
-                    labels={[...new Set(results.data)]}
-                  />
-                )}
+                <ul className="text-gray-700 space-y-2 mb-6">
+                  {Object.entries(results.statistics).map(([key, value]) => (
+                    <li key={key}>
+                      <strong>{key}:</strong> {value}
+                    </li>
+                  ))}
+                </ul>
+                <ProbabilityBarChart
+                  data={results.data.frequencies}
+                  labels={results.data.labels}
+                />
               </>
             ) : (
               <p className="text-gray-500">
