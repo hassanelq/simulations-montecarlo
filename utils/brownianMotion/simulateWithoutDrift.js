@@ -11,6 +11,7 @@ function randomNormal() {
  * @param {number} inputs.particles
  * @param {number} inputs.timeStep
  * @param {number} inputs.volatility
+ * @param {number} inputs.initialValue
  * @returns {Array<Array<number>>}
  */
 export default function simulateWithoutDrift({
@@ -18,11 +19,12 @@ export default function simulateWithoutDrift({
   particles,
   timeStep,
   volatility,
+  initialValue,
 }) {
   const trajectories = [];
 
   for (let p = 0; p < particles; p++) {
-    let position = 0;
+    let position = initialValue;
     const singleTrajectory = [position];
 
     for (let i = 1; i <= steps; i++) {

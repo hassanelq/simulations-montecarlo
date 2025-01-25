@@ -39,6 +39,7 @@ const defaultInputs = {
     particles: 5,
     timeStep: 10,
     volatility: 0.2,
+    initialValue: 0,
   },
   drift: {
     steps: 500,
@@ -46,22 +47,24 @@ const defaultInputs = {
     timeStep: 10,
     drift: 0.05,
     volatility: 0.2,
-  },
-  ornstein: {
-    steps: 500,
-    particles: 5,
-    timeStep: 10,
-    theta: 0.7,
-    mean: 0.0,
-    volatility: 0.2,
+    initialValue: 0,
   },
   geometric: {
-    initialPrice: 500,
     drift: 0.05,
     volatility: 0.2,
     steps: 100,
     particles: 5,
-    timeStep: 10,
+    timeStep: 1,
+    initialValue: 1,
+  },
+  ornstein: {
+    steps: 500,
+    particles: 5,
+    timeStep: 1,
+    theta: 0.7,
+    mean: 0.0,
+    volatility: 0.2,
+    initialValue: 1,
   },
 };
 
@@ -70,10 +73,10 @@ const inputLabels = {
   particles: "Number of Paths",
   timeStep: "Time Step Size",
   drift: "Drift (μ)",
-  volatility: "Volatility (σ)",
   theta: "Mean Reversion Speed (θ)",
   mean: "Mean Reversion Level (μ)",
-  initialPrice: "Initial Price",
+  volatility: "Volatility (σ)",
+  initialValue: "Initial Value",
 };
 
 function BrownianMotionPage() {
@@ -85,8 +88,8 @@ function BrownianMotionPage() {
   const applications = [
     { title: "Brownian Motion without Drift", key: "noDrift" },
     { title: "Brownian Motion with Drift", key: "drift" },
-    { title: "Ornstein-Uhlenbeck Process", key: "ornstein" },
     { title: "Geometric Brownian Motion", key: "geometric" },
+    { title: "Ornstein-Uhlenbeck Process", key: "ornstein" },
   ];
 
   const handleApplicationChange = (key) => {
@@ -186,7 +189,7 @@ function BrownianMotionPage() {
 
       {application && (
         <div className="flex flex-col md:flex-row gap-6">
-          <div className="md:w-1/3 bg-white p-6 rounded-lg shadow-md">
+          <div className="md:w-1/4 bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-xl font-bold mb-2">
               {application.charAt(0).toUpperCase() + application.slice(1)}
             </h3>
@@ -219,7 +222,7 @@ function BrownianMotionPage() {
             </button>
           </div>
 
-          <div className="md:w-2/3 bg-white p-6 rounded-lg shadow-md">
+          <div className="md:w-3/4 bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-xl font-bold mb-4">Results</h3>
             {isLoading ? (
               <div className="flex justify-center items-center h-64">

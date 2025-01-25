@@ -7,7 +7,7 @@ function randomNormal() {
 /**
  * Geometric Brownian Motion simulation for multiple paths.
  * @param {Object} inputs
- * @param {number} inputs.initialPrice
+ * @param {number} inputs.initialValue // <--- Correct the JSDoc to match usage
  * @param {number} inputs.drift
  * @param {number} inputs.volatility
  * @param {number} inputs.steps
@@ -16,7 +16,7 @@ function randomNormal() {
  * @returns {Array<Array<number>>}
  */
 export default function simulateGeometricBrownianMotion({
-  initialPrice,
+  initialValue,
   drift,
   volatility,
   steps,
@@ -26,12 +26,12 @@ export default function simulateGeometricBrownianMotion({
   const trajectories = [];
 
   for (let p = 0; p < particles; p++) {
-    let price = initialPrice;
+    let price = initialValue;
     const singleTrajectory = [price];
 
     for (let i = 1; i <= steps; i++) {
       const z = randomNormal();
-      // GBM formula:
+      // S(t+Δt) = S(t)*exp((μ−σ²/2)Δt + σ√Δt * z)
       const growth = (drift - 0.5 * volatility * volatility) * timeStep;
       const shock = volatility * Math.sqrt(timeStep) * z;
       price = price * Math.exp(growth + shock);

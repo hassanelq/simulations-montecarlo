@@ -10,9 +10,10 @@ function randomNormal() {
  * @param {number} inputs.steps
  * @param {number} inputs.particles
  * @param {number} inputs.timeStep
- * @param {number} inputs.theta - Speed of reversion
- * @param {number} inputs.mean - Long-term mean
+ * @param {number} inputs.theta
+ * @param {number} inputs.mean
  * @param {number} inputs.volatility
+ * @param {number} inputs.initialValue
  * @returns {Array<Array<number>>}
  */
 export default function simulateOrnsteinUhlenbeck({
@@ -22,23 +23,19 @@ export default function simulateOrnsteinUhlenbeck({
   theta,
   mean,
   volatility,
+  initialValue,
 }) {
   const trajectories = [];
 
   for (let p = 0; p < particles; p++) {
-    // Start from 0 or any initial X
-    let x = 0;
+    let x = initialValue;
     const singleTrajectory = [x];
 
     for (let i = 1; i <= steps; i++) {
       const z = randomNormal();
-      // OU update:
-      // X_{t+dt} = X_t + theta*(mean - X_t)*dt + sigma * sqrt(dt)*z
-      x =
-        x +
-        theta * (mean - x) * timeStep +
-        volatility * Math.sqrt(timeStep) * z;
 
+      // Euler discretization for OU: dX = theta*(mean - X)*dt + sigma*dW
+      x += theta * (mean - x) * timeStep + volatility * Math.sqrt(timeStep) * z;
       singleTrajectory.push(x);
     }
 
