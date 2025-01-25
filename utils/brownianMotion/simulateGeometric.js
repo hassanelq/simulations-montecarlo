@@ -5,7 +5,7 @@ function randomNormal() {
 }
 
 /**
- * Example Stock Price Simulation (Geometric Brownian).
+ * Geometric Brownian Motion simulation for multiple paths.
  * @param {Object} inputs
  * @param {number} inputs.initialPrice
  * @param {number} inputs.drift
@@ -15,13 +15,13 @@ function randomNormal() {
  * @param {number} inputs.timeStep
  * @returns {Array<Array<number>>}
  */
-export default function simulateStockPrice({
-  initialPrice = 100,
-  drift = 0.05,
-  volatility = 0.2,
-  steps = 100,
-  particles = 1,
-  timeStep = 1,
+export default function simulateGeometricBrownianMotion({
+  initialPrice,
+  drift,
+  volatility,
+  steps,
+  particles,
+  timeStep,
 }) {
   const trajectories = [];
 
@@ -31,9 +31,10 @@ export default function simulateStockPrice({
 
     for (let i = 1; i <= steps; i++) {
       const z = randomNormal();
+      // GBM formula:
       const growth = (drift - 0.5 * volatility * volatility) * timeStep;
       const shock = volatility * Math.sqrt(timeStep) * z;
-      price *= Math.exp(growth + shock);
+      price = price * Math.exp(growth + shock);
       singleTrajectory.push(price);
     }
 

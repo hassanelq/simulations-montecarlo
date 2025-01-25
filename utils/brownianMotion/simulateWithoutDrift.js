@@ -5,31 +5,30 @@ function randomNormal() {
 }
 
 /**
- * Simulates 2D Brownian Motion.
+ * Brownian motion without drift, only volatility.
  * @param {Object} inputs
  * @param {number} inputs.steps
  * @param {number} inputs.particles
  * @param {number} inputs.timeStep
- * @returns {Array<Array<{ x: number, y: number }>>}
+ * @param {number} inputs.volatility
+ * @returns {Array<Array<number>>}
  */
-export default function simulate2DBrownianMotion({
+export default function simulateWithoutDrift({
   steps,
   particles,
   timeStep,
+  volatility,
 }) {
   const trajectories = [];
 
   for (let p = 0; p < particles; p++) {
-    let x = 0;
-    let y = 0;
-    const singleTrajectory = [{ x, y }];
+    let position = 0;
+    const singleTrajectory = [position];
 
     for (let i = 1; i <= steps; i++) {
-      const incrementX = Math.sqrt(timeStep) * randomNormal();
-      const incrementY = Math.sqrt(timeStep) * randomNormal();
-      x += incrementX;
-      y += incrementY;
-      singleTrajectory.push({ x, y });
+      const increment = volatility * Math.sqrt(timeStep) * randomNormal();
+      position += increment;
+      singleTrajectory.push(position);
     }
 
     trajectories.push(singleTrajectory);

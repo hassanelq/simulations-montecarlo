@@ -40,6 +40,32 @@ const defaultInputs = {
   binomial: { n: 10, p: 0.5, N: 1000 },
 };
 
+const inputLabels = {
+  normal: {
+    mu: "Mean (μ)",
+    sigma: "Standard Deviation (σ)",
+    N: "Number of Simulations (N)",
+  },
+  uniform: {
+    a: "Start of Range (a)",
+    b: "End of Range (b)",
+    N: "Number of Simulations (N)",
+  },
+  exponential: {
+    lambda: "Rate Parameter (λ)",
+    N: "Number of Simulations (N)",
+  },
+  poisson: {
+    lambda: "Rate Parameter (λ)",
+    N: "Number of Simulations (N)",
+  },
+  binomial: {
+    n: "Number of Trials (n)",
+    p: "Probability of Success (p)",
+    N: "Number of Simulations (N)",
+  },
+};
+
 const ProbabilityDistributionsPage = () => {
   const [distributionType, setDistributionType] = useState(null);
   const [inputs, setInputs] = useState({});
@@ -107,7 +133,9 @@ const ProbabilityDistributionsPage = () => {
             <div className="space-y-4">
               {Object.entries(inputs).map(([key, value]) => (
                 <div key={key}>
-                  <label className="block mb-1 font-medium">{key}</label>
+                  <label className="block mb-1 font-medium">
+                    {inputLabels[distributionType][key]}
+                  </label>
                   <input
                     type="number"
                     className="border p-2 rounded w-full"

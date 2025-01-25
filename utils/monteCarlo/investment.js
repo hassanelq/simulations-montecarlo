@@ -1,3 +1,10 @@
+// Utility: Generate a random draw from the standard normal distribution
+function randomNormal() {
+  const u = 1 - Math.random();
+  const v = 1 - Math.random();
+  return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+}
+
 function mean(array) {
   return array.reduce((a, b) => a + b, 0) / array.length;
 }
@@ -5,12 +12,12 @@ function mean(array) {
 export default function monteCarloInvestment(inputs) {
   const {
     initialInvestment,
-    annualReturn,
-    annualVolatility,
-    timeHorizon,
+    annualReturn, // in %
+    annualVolatility, // in %
+    timeHorizon, // integer years
     annualContribution,
     investmentGoal,
-    numSimulations,
+    numSimulations = 1000,
   } = inputs;
 
   const trajectories = [];
@@ -21,8 +28,11 @@ export default function monteCarloInvestment(inputs) {
     const trajectory = [portfolio];
 
     for (let year = 1; year <= timeHorizon; year++) {
-      const randomShock = (Math.random() - 0.5) * annualVolatility;
-      portfolio *= 1 + (annualReturn + randomShock) / 100;
+      // If using a simple arithmetic model:
+      const z = randomNormal();
+      // random shock around annualReturn
+      const shock = (annualVolatility / 100) * z;
+      portfolio *= 1 + (annualReturn / 100 + shock);
       portfolio += annualContribution;
       trajectory.push(portfolio);
     }

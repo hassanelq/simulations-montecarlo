@@ -33,8 +33,8 @@ export default function simulateNormal({ mu, sigma, N }) {
       "Médiane des résultats": median(rawData).toFixed(4),
       "Maximum des résultats": Math.max(...rawData).toFixed(4),
       "Minimum des résultats": Math.min(...rawData).toFixed(4),
-      "Asymétrie (Skewness) des résultats": skewness(rawData).toFixed(4),
-      "Kurtosis des résultats": kurtosis(rawData).toFixed(4),
+      // "Asymétrie (Skewness) des résultats": skewness(rawData).toFixed(4),
+      // "Kurtosis des résultats": kurtosis(rawData).toFixed(4),
     },
     data: {
       labels: bins.map((bin) => bin.toFixed(1)),

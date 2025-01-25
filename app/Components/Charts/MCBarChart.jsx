@@ -34,7 +34,7 @@ const BarChart = ({ data = [] }) => {
   }
 
   const frequency = data.reduce((acc, value) => {
-    const range = Math.floor(value / 10000) * 10000;
+    const range = Math.floor(value / 5000) * 5000;
     acc[range] = (acc[range] || 0) + 1;
     return acc;
   }, {});
