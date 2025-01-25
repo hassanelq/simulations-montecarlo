@@ -28,8 +28,10 @@ export default function simulateWithDrift({
     const singleTrajectory = [position];
 
     for (let i = 1; i <= steps; i++) {
+      // Scale drift properly based on time step
+      const scaledDrift = drift * (timeStep / steps);
       const increment =
-        drift * timeStep + volatility * Math.sqrt(timeStep) * randomNormal();
+        scaledDrift + volatility * Math.sqrt(timeStep) * randomNormal();
       position += increment;
       singleTrajectory.push(position);
     }
