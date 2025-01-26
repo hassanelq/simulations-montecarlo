@@ -55,7 +55,7 @@ const ProbabilityBarChart = ({ data, labels }) => {
   };
 
   return (
-    <div className="w-full h-96">
+    <div className="w-full h-[32rem]">
       <Bar type="bar" data={formattedData} options={options} />
     </div>
   );

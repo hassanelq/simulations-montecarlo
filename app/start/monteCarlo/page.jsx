@@ -40,10 +40,10 @@ const MonteCarloPage = () => {
   const defaultInputs = {
     investment: {
       initialInvestment: 10000,
-      annualReturn: 7,
+      annualReturn: 5,
       annualVolatility: 15,
-      timeHorizon: 30,
-      annualContribution: 1000,
+      timeHorizon: 15,
+      annualContribution: 500,
       investmentGoal: 50000,
       numSimulations: 1000,
     },

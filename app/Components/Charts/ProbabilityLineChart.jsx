@@ -58,7 +58,7 @@ const ProbabilityLineChart = ({ data, labels }) => {
   };
 
   return (
-    <div className="w-full h-96">
+    <div className="w-full h-[32rem]">
       <Line type="line" data={formattedData} options={options} />
     </div>
   );

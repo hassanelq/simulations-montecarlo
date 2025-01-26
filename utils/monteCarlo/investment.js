@@ -53,7 +53,7 @@ export default function monteCarloInvestment(inputs) {
     },
     graph: {
       labels: Array.from({ length: timeHorizon + 1 }, (_, i) => i),
-      datasets: trajectories.slice(0, 10).map((data, idx) => ({
+      datasets: trajectories.slice(0, 15).map((data, idx) => ({
         label: `Simulation ${idx + 1}`,
         data,
         borderColor: `rgba(0, 123, 255, ${0.5 + idx / 20})`,

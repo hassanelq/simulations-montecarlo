@@ -51,21 +51,6 @@ const Footer = () => (
             </svg>
           </a>
           <a
-            href="https://x.com/el_qadi_"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-gray-600 hover:text-blue-400 transition"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-6 h-6"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path d="M22.46 6c-.77.35-1.6.59-2.46.69a4.28 4.28 0 0 0 1.88-2.37c-.8.48-1.69.82-2.64 1A4.22 4.22 0 0 0 15.5 4c-2.34 0-4.22 2.11-3.92 4.44A12.06 12.06 0 0 1 3.2 5a4.2 4.2 0 0 0-.57 2.13c0 1.47.73 2.77 1.85 3.53a4.2 4.2 0 0 1-1.91-.53v.05c0 2.07 1.48 3.8 3.44 4.19a4.2 4.2 0 0 1-1.9.07 4.22 4.22 0 0 0 3.95 2.94A8.45 8.45 0 0 1 2 19.29a12 12 0 0 0 6.29 1.85c7.55 0 11.67-6.25 11.67-11.67 0-.18 0-.36-.02-.54a8.3 8.3 0 0 0 2.02-2.11z" />
-            </svg>
-          </a>
-          <a
             href="https://www.elqadi.me/"
             target="_blank"
             rel="noopener noreferrer"

@@ -67,7 +67,7 @@ const BarChart = ({ data = [] }) => {
   };
 
   return (
-    <div className="w-full h-96">
+    <div className="w-full h-[32rem]">
       <Bar data={formattedData} options={options} />
     </div>
   );
