@@ -18,9 +18,10 @@ Welcome to the Financial Simulation Platform, a powerful and interactive tool de
 - **Risk Analysis:** Calculates Value at Risk (VaR) to analyze potential losses in a portfolio.
 
 ### **3. Brownian Motion**
-- **1D Brownian Motion:** Simulates random motion along a single axis.
-- **2D Brownian Motion:** Visualizes random particle motion in two dimensions.
-- **Stock Price Simulation:** Models stock price paths using Geometric Brownian Motion.
+- **Brownian Motion without Drift**
+- **Brownian Motion with Drift**
+- **Geometric Brownian Motion**
+- **Ornstein-Uhlenbeck Process**
 
 ---
 
