@@ -1,11 +1,6 @@
 "use client";
 import NavLink from "./ui/NavLink";
-import dynamic from "next/dynamic";
-
-// Dynamically import LottieAnimation
-const LottieAnimation = dynamic(() => import("./ui/LootieAnimation"), {
-  ssr: false, // Disable SSR
-});
+import LottieAnimation from "./ui/LootieAnimation";
 
 export default function Hero() {
   return (
