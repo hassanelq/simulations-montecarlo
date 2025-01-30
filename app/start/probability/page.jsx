@@ -30,6 +30,31 @@ const distributions = [
     name: "Binomial Distribution",
     description: "Counts successes in a fixed number of trials.",
   },
+  {
+    type: "lognormal",
+    name: "Log-Normal Distribution",
+    description: "Model asset prices with right-skewed returns.",
+  },
+  {
+    type: "studentt",
+    name: "Student's t-Distribution",
+    description: "Model returns with fat-tailed distributions.",
+  },
+  {
+    type: "cauchy",
+    name: "Cauchy Distribution",
+    description: "Model extreme market movements and heavy tails.",
+  },
+  {
+    type: "beta",
+    name: "Beta Distribution",
+    description: "Model recovery rates and bounded variables.",
+  },
+  {
+    type: "gamma",
+    name: "Gamma Distribution",
+    description: "Model insurance risks and waiting times.",
+  },
 ];
 
 const defaultInputs = {
@@ -38,6 +63,11 @@ const defaultInputs = {
   exponential: { lambda: 1, N: 1000 },
   poisson: { lambda: 1, N: 1000 },
   binomial: { n: 10, p: 0.5, N: 1000 },
+  lognormal: { mu: 0, sigma: 1, N: 1000 },
+  studentt: { nu: 5, N: 1000 },
+  cauchy: { x0: 0, gamma: 1, N: 1000 },
+  beta: { alpha: 2, beta: 2, N: 1000 },
+  gamma: { k: 2, theta: 2, N: 1000 },
 };
 
 const inputLabels = {
@@ -62,6 +92,30 @@ const inputLabels = {
   binomial: {
     n: "Number of Trials (n)",
     p: "Probability of Success (p)",
+    N: "Number of Simulations (N)",
+  },
+  lognormal: {
+    mu: "Log-Mean (μ)",
+    sigma: "Log-Std Dev (σ)",
+    N: "Number of Simulations (N)",
+  },
+  studentt: {
+    nu: "Degrees of Freedom (ν)",
+    N: "Number of Simulations (N)",
+  },
+  cauchy: {
+    x0: "Location (x₀)",
+    gamma: "Scale (γ)",
+    N: "Number of Simulations (N)",
+  },
+  beta: {
+    alpha: "Shape α",
+    beta: "Shape β",
+    N: "Number of Simulations (N)",
+  },
+  gamma: {
+    k: "Shape (k)",
+    theta: "Scale (θ)",
     N: "Number of Simulations (N)",
   },
 };

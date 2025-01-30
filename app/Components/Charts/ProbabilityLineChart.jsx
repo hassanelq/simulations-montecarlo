@@ -1,67 +1,45 @@
-"use client";
-
-import React from "react";
-import dynamic from "next/dynamic";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
-
-// Register required Chart.js components
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
-
-// Dynamically import the Line component from react-chartjs-2
-const Line = dynamic(() => import("react-chartjs-2").then((mod) => mod.Line), {
-  ssr: false,
-});
-
+// Update ProbabilityLineChart.js
 const ProbabilityLineChart = ({ data, labels }) => {
-  const formattedData = {
+  const chartData = {
     labels,
     datasets: [
       {
-        label: "Probability Density",
+        label: "Density",
         data,
         borderColor: "rgba(54, 162, 235, 1)",
         backgroundColor: "rgba(54, 162, 235, 0.2)",
         borderWidth: 2,
-        tension: 0.4,
+        tension: 0.1,
+        fill: true,
+        pointRadius: 0,
       },
     ],
   };
 
   const options = {
     responsive: true,
-    maintainAspectRatio: false,
+    interaction: {
+      mode: "nearest",
+      intersect: false,
+    },
     plugins: {
-      legend: { position: "top" },
-      title: { display: true, text: "Probability Distribution" },
+      tooltip: {
+        callbacks: {
+          label: (context) => `Density: ${context.parsed.y.toFixed(4)}`,
+        },
+      },
     },
     scales: {
-      x: { title: { display: true, text: "Values" } },
-      y: { title: { display: true, text: "Probability" } },
+      x: {
+        title: { display: true, text: "Value" },
+        grid: { display: false },
+      },
+      y: {
+        title: { display: true, text: "Probability Density" },
+        beginAtZero: true,
+      },
     },
   };
 
-  return (
-    <div className="w-full h-[32rem]">
-      <Line type="line" data={formattedData} options={options} />
-    </div>
-  );
+  return <Line data={chartData} options={options} />;
 };
-
-export default ProbabilityLineChart;
