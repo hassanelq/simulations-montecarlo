@@ -111,3 +111,37 @@ export function kurtosis(data) {
     (3 * (n - 1) ** 2) / ((n - 2) * (n - 3))
   );
 }
+
+export function processDiscreteData(data, description) {
+  const frequencies = data.reduce((acc, value) => {
+    acc[value] = (acc[value] || 0) + 1;
+    return acc;
+  }, {});
+
+  const labels = Object.keys(frequencies).sort((a, b) => a - b);
+  const frequenciesArray = labels.map((key) => frequencies[key]);
+
+  return {
+    description,
+    statistics: {
+      Mean: mean(data).toFixed(4),
+      Median: median(data).toFixed(4),
+      "Std Dev": sampleStandardDeviation(data).toFixed(4),
+      Skewness: skewness(data).toFixed(4),
+      Kurtosis: kurtosis(data).toFixed(4),
+    },
+    data: { labels, frequencies: frequenciesArray },
+  };
+}
+
+export function validateHypergeometric(K, N, n) {
+  if (K > N) throw new Error("Successes (K) cannot exceed population size (N)");
+  if (n > N)
+    throw new Error("Sample size (n) cannot exceed population size (N)");
+  if (K < 0 || N < 0 || n < 0) throw new Error("Parameters cannot be negative");
+}
+
+export function validateTriangular(a, b, c) {
+  if (a >= b) throw new Error("Minimum (a) must be less than maximum (b)");
+  if (c < a || c > b) throw new Error("Mode (c) must be between a and b");
+}

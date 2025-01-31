@@ -55,6 +55,31 @@ const distributions = [
     name: "Gamma Distribution",
     description: "Model insurance risks and waiting times.",
   },
+  {
+    type: "levy",
+    name: "Lévy Distribution",
+    description: "Models extreme price jumps and flash crashes.",
+  },
+  {
+    type: "pareto",
+    name: "Pareto Distribution",
+    description: "Models wealth distribution and insurance claims.",
+  },
+  {
+    type: "hypergeometric",
+    name: "Hypergeometric Distribution",
+    description: "Models default correlation in small portfolios.",
+  },
+  {
+    type: "weibull",
+    name: "Weibull Distribution",
+    description: "Models equipment failure and operational risk.",
+  },
+  {
+    type: "triangular",
+    name: "Triangular Distribution",
+    description: "Models subjective expert estimates and scenarios.",
+  },
 ];
 
 const distributionExplanations = {
@@ -73,6 +98,15 @@ const distributionExplanations = {
     "Models extreme events. No defined mean or variance. Used in stress testing.",
   beta: "Models recovery rates (0-100%). Also used in Bayesian analysis.",
   gamma: "Models insurance claim sizes. k=1 gives exponential distribution.",
+  levy: "Models extreme price jumps with heavy tails. Used in high-frequency trading analysis.",
+  pareto:
+    "Models wealth distribution and extreme events following the 80-20 rule.",
+  hypergeometric:
+    "Models successes in draws without replacement from finite populations.",
+  weibull:
+    "Models failure rates with changing risk over time. Used in reliability engineering.",
+  triangular:
+    "Models subjective estimates with minimum, maximum, and most likely values.",
 };
 
 const defaultInputs = {
@@ -86,6 +120,11 @@ const defaultInputs = {
   cauchy: { x0: 0, gamma: 1, N: 1000 },
   beta: { alpha: 2, beta: 2, N: 1000 },
   gamma: { k: 2, theta: 2, N: 1000 },
+  levy: { alpha: 1, gamma: 1, N: 1000 },
+  pareto: { alpha: 2, xm: 1, N: 1000 },
+  hypergeometric: { K: 10, N: 50, n: 5, simulations: 1000 },
+  weibull: { lambda: 1, k: 1, N: 1000 },
+  triangular: { a: 0, b: 1, c: 0.5, N: 1000 },
 };
 
 const parameterConstraints = {
@@ -98,6 +137,19 @@ const parameterConstraints = {
   binomial: { p: { min: 0, max: 1 } },
   exponential: { lambda: { min: 0.01 } },
   poisson: { lambda: { min: 0.01 } },
+  levy: { alpha: { min: 0.1, max: 2 }, gamma: { min: 0.01 } },
+  pareto: { alpha: { min: 0.01 }, xm: { min: 0.01 } },
+  hypergeometric: {
+    K: { min: 1 },
+    N: { min: 1 },
+    n: { min: 1 },
+  },
+  weibull: { lambda: { min: 0.01 }, k: { min: 0.01 } },
+  triangular: {
+    a: {},
+    b: {},
+    c: {},
+  },
 };
 
 const inputLabels = {
@@ -148,6 +200,28 @@ const inputLabels = {
     theta: "Scale",
     N: "Number of Simulations",
   },
+  levy: {
+    alpha: "Stability parameter (0 < α ≤ 2)",
+    gamma: "Scale parameter (γ > 0)",
+  },
+  pareto: {
+    alpha: "Shape parameter (α > 0)",
+    xm: "Scale parameter (xₘ > 0)",
+  },
+  hypergeometric: {
+    K: "Number of success states in population",
+    N: "Population size",
+    n: "Number of draws",
+  },
+  weibull: {
+    lambda: "Scale parameter (λ > 0)",
+    k: "Shape parameter (k > 0)",
+  },
+  triangular: {
+    a: "Minimum value",
+    b: "Maximum value",
+    c: "Mode (most likely value)",
+  },
 };
 
 const parameterTooltips = {
@@ -179,6 +253,33 @@ const parameterTooltips = {
   },
 };
 
+const getFinancialUseCases = (distributionType) => {
+  const useCases = {
+    normal: ["Portfolio returns", "Risk factor modeling"],
+    uniform: ["Random number generation", "Scenario analysis"],
+    exponential: ["Credit default timing", "Insurance claims"],
+    poisson: ["Market crash modeling", "Operational risk events"],
+    binomial: ["Option exercise probability", "Credit default swaps"],
+    lognormal: ["Stock prices", "Real estate values"],
+    studentt: ["VaR calculations", "Small sample analysis"],
+    cauchy: ["Extreme risk modeling", "Market crash scenarios"],
+    beta: ["Recovery rates", "Default probabilities"],
+    gamma: ["Insurance claims", "Operational risk"],
+    levy: ["Flash crash modeling", "High-frequency trading anomalies"],
+    pareto: ["Wealth distribution analysis", "Catastrophic insurance claims"],
+    hypergeometric: [
+      "Portfolio default correlation",
+      "Small sample risk assessment",
+    ],
+    weibull: ["Equipment failure prediction", "Operational risk modeling"],
+    triangular: [
+      "Expert estimation scenarios",
+      "Business planning simulations",
+    ],
+  };
+  return useCases[distributionType] || [];
+};
+
 const ProbabilityDistributionsPage = () => {
   const [distributionType, setDistributionType] = useState(null);
   const [inputs, setInputs] = useState({});
@@ -207,22 +308,6 @@ const ProbabilityDistributionsPage = () => {
         (max === undefined || value <= max)
       );
     });
-  };
-
-  const getFinancialUseCases = () => {
-    const useCases = {
-      normal: ["Portfolio returns", "Risk factor modeling"],
-      uniform: ["Random number generation", "Scenario analysis"],
-      exponential: ["Credit default timing", "Insurance claims"],
-      poisson: ["Market crash modeling", "Operational risk events"],
-      binomial: ["Option exercise probability", "Credit default swaps"],
-      lognormal: ["Stock prices", "Real estate values"],
-      studentt: ["VaR calculations", "Small sample analysis"],
-      cauchy: ["Extreme risk modeling", "Market crash scenarios"],
-      beta: ["Recovery rates", "Default probabilities"],
-      gamma: ["Insurance claims", "Operational risk"],
-    };
-    return useCases[distributionType] || [];
   };
 
   const simulateDistribution = async () => {
