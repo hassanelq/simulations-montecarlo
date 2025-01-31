@@ -1,43 +1,91 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import dynamic from "next/dynamic";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
+import { Chart as ChartJS, registerables } from "chart.js";
+import zoomPlugin from "chartjs-plugin-zoom";
+import annotationPlugin from "chartjs-plugin-annotation";
 
-// Register required Chart.js components
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+// Register all necessary Chart.js components
+ChartJS.register(...registerables, zoomPlugin, annotationPlugin);
 
-// Dynamically import the Bar component from react-chartjs-2
 const Bar = dynamic(() => import("react-chartjs-2").then((mod) => mod.Bar), {
   ssr: false,
 });
 
-const ProbabilityBarChart = ({ data, labels }) => {
-  const formattedData = {
+const ProbabilityBarChart = ({
+  data,
+  labels,
+  distributionType,
+  params,
+  isDiscrete = false,
+}) => {
+  const chartRef = useRef(null);
+
+  // Color scheme based on distribution type
+  const colorMap = {
+    normal: { bg: "rgba(54, 162, 235, 0.5)", border: "rgba(54, 162, 235, 1)" },
+    lognormal: {
+      bg: "rgba(255, 99, 132, 0.5)",
+      border: "rgba(255, 99, 132, 1)",
+    },
+    studentt: {
+      bg: "rgba(75, 192, 192, 0.5)",
+      border: "rgba(75, 192, 192, 1)",
+    },
+    cauchy: {
+      bg: "rgba(153, 102, 255, 0.5)",
+      border: "rgba(153, 102, 255, 1)",
+    },
+    default: { bg: "rgba(255, 159, 64, 0.5)", border: "rgba(255, 159, 64, 1)" },
+  };
+
+  const { bg, border } = colorMap[distributionType] || colorMap.default;
+
+  // Theoretical PDF calculation
+  const theoreticalPDF = labels.map((label) => {
+    const x = parseFloat(label);
+    switch (distributionType) {
+      case "normal":
+        return (
+          (1 / (params.sigma * Math.sqrt(2 * Math.PI))) *
+          Math.exp(-0.5 * ((x - params.mu) / params.sigma) ** 2)
+        );
+      case "lognormal":
+        return (
+          (1 / (x * params.sigma * Math.sqrt(2 * Math.PI))) *
+          Math.exp(-0.5 * ((Math.log(x) - params.mu) / params.sigma) ** 2)
+        );
+      default:
+        return null;
+    }
+  });
+
+  const chartData = {
     labels,
     datasets: [
       {
-        label: "Frequency",
+        label: isDiscrete ? "Probability Mass" : "Frequency Density",
         data,
-        backgroundColor: "rgba(75, 192, 192, 0.5)",
-        borderColor: "rgba(75, 192, 192, 1)",
+        backgroundColor: bg,
+        borderColor: border,
         borderWidth: 1,
+        barPercentage: isDiscrete ? 0.9 : 1.0,
+        categoryPercentage: isDiscrete ? 0.8 : 1.0,
       },
+      ...(theoreticalPDF[0]
+        ? [
+            {
+              label: "Theoretical PDF",
+              data: theoreticalPDF,
+              type: "line",
+              borderColor: "rgba(255, 99, 132, 1)",
+              borderWidth: 2,
+              pointRadius: 0,
+              tension: 0.1,
+            },
+          ]
+        : []),
     ],
   };
 
@@ -46,17 +94,93 @@ const ProbabilityBarChart = ({ data, labels }) => {
     maintainAspectRatio: false,
     plugins: {
       legend: { position: "top" },
-      title: { display: true, text: "Probability Distribution" },
+      title: { display: true, text: `${distributionType} Distribution` },
+      tooltip: {
+        callbacks: {
+          label: (context) => {
+            const label = context.dataset.label || "";
+            if (context.datasetIndex === 0) {
+              return `${label}: ${context.parsed.y.toFixed(2)}`;
+            }
+            return `${label}: ${context.parsed.y.toExponential(2)}`;
+          },
+        },
+      },
+      zoom: {
+        zoom: {
+          wheel: { enabled: true },
+          pinch: { enabled: true },
+          mode: "xy",
+        },
+        pan: {
+          enabled: true,
+          mode: "xy",
+        },
+      },
+      annotation: {
+        annotations: {
+          meanLine: {
+            type: "line",
+            yMin: 0,
+            yMax: 0,
+            borderColor: "rgba(0, 0, 0, 0.7)",
+            borderWidth: 2,
+            borderDash: [5, 5],
+            label: {
+              content: "Mean",
+              position: "end",
+            },
+          },
+        },
+      },
+      id: "distributionChart",
     },
     scales: {
-      x: { title: { display: true, text: "Values" } },
-      y: { title: { display: true, text: "Frequency" } },
+      x: {
+        title: {
+          display: true,
+          text: isDiscrete ? "Outcome" : "Value Range",
+        },
+        type: isDiscrete ? "category" : "linear",
+        grid: { display: false },
+      },
+      y: {
+        title: {
+          display: true,
+          text: isDiscrete ? "Probability" : "Density",
+        },
+        beginAtZero: true,
+      },
+    },
+    interaction: {
+      mode: "nearest",
+      intersect: false,
     },
   };
 
+  const handleResetZoom = () => {
+    const chart = chartRef.current;
+    if (chart) {
+      chart.resetZoom();
+    }
+  };
+
   return (
-    <div className="w-full h-[32rem]">
-      <Bar type="bar" data={formattedData} options={options} />
+    <div className="w-full h-[32rem] relative">
+      <Bar
+        ref={chartRef}
+        data={chartData}
+        options={options}
+        datasetIdKey="distributionChart"
+      />
+      <div className="absolute top-2 right-2 flex gap-2">
+        <button
+          className="px-2 py-1 bg-white shadow rounded text-sm"
+          onClick={handleResetZoom}
+        >
+          Reset Zoom
+        </button>
+      </div>
     </div>
   );
 };

@@ -57,6 +57,24 @@ const distributions = [
   },
 ];
 
+const distributionExplanations = {
+  normal:
+    "Used in Black-Scholes model for option pricing. Assumes symmetric returns.",
+  uniform:
+    "Models equal likelihood scenarios, useful for random number generation.",
+  exponential: "Models decay processes like credit default timing.",
+  poisson: "Used in modeling rare events like market crashes.",
+  binomial: "Models binary outcomes like option exercise decisions.",
+  lognormal:
+    "Models stock prices (cannot go negative). If X ~ Normal(μ,σ), then e^X ~ Lognormal.",
+  studentt:
+    "Used in Value-at-Risk calculations for small sample sizes. ν < 30 gives heavier tails.",
+  cauchy:
+    "Models extreme events. No defined mean or variance. Used in stress testing.",
+  beta: "Models recovery rates (0-100%). Also used in Bayesian analysis.",
+  gamma: "Models insurance claim sizes. k=1 gives exponential distribution.",
+};
+
 const defaultInputs = {
   normal: { mu: 0, sigma: 1, N: 1000 },
   uniform: { a: 0, b: 1, N: 1000 },
@@ -70,53 +88,94 @@ const defaultInputs = {
   gamma: { k: 2, theta: 2, N: 1000 },
 };
 
+const parameterConstraints = {
+  normal: { sigma: { min: 0.01 } },
+  lognormal: { sigma: { min: 0.01 } },
+  studentt: { nu: { min: 1 } },
+  cauchy: { gamma: { min: 0.01 } },
+  beta: { alpha: { min: 0.01 }, beta: { min: 0.01 } },
+  gamma: { k: { min: 0.01 }, theta: { min: 0.01 } },
+  binomial: { p: { min: 0, max: 1 } },
+  exponential: { lambda: { min: 0.01 } },
+  poisson: { lambda: { min: 0.01 } },
+};
+
 const inputLabels = {
   normal: {
     mu: "Mean (μ)",
     sigma: "Standard Deviation (σ)",
-    N: "Number of Simulations (N)",
+    N: "Number of Simulations",
   },
   uniform: {
-    a: "Start of Range (a)",
-    b: "End of Range (b)",
-    N: "Number of Simulations (N)",
+    a: "Start of Range",
+    b: "End of Range",
+    N: "Number of Simulations",
   },
   exponential: {
-    lambda: "Rate Parameter (λ)",
-    N: "Number of Simulations (N)",
+    lambda: "Rate Parameter",
+    N: "Number of Simulations",
   },
   poisson: {
-    lambda: "Rate Parameter (λ)",
-    N: "Number of Simulations (N)",
+    lambda: "Rate Parameter",
+    N: "Number of Simulations",
   },
   binomial: {
-    n: "Number of Trials (n)",
-    p: "Probability of Success (p)",
-    N: "Number of Simulations (N)",
+    n: "Number of Trials",
+    p: "Success Probability",
+    N: "Number of Simulations",
   },
   lognormal: {
-    mu: "Log-Mean (μ)",
-    sigma: "Log-Std Dev (σ)",
-    N: "Number of Simulations (N)",
+    mu: "Log-Mean",
+    sigma: "Log-Std Dev",
+    N: "Number of Simulations",
   },
   studentt: {
-    nu: "Degrees of Freedom (ν)",
-    N: "Number of Simulations (N)",
+    nu: "Degrees of Freedom",
+    N: "Number of Simulations",
   },
   cauchy: {
-    x0: "Location (x₀)",
-    gamma: "Scale (γ)",
-    N: "Number of Simulations (N)",
+    x0: "Location",
+    gamma: "Scale",
+    N: "Number of Simulations",
   },
   beta: {
     alpha: "Shape α",
     beta: "Shape β",
-    N: "Number of Simulations (N)",
+    N: "Number of Simulations",
   },
   gamma: {
-    k: "Shape (k)",
-    theta: "Scale (θ)",
-    N: "Number of Simulations (N)",
+    k: "Shape",
+    theta: "Scale",
+    N: "Number of Simulations",
+  },
+};
+
+const parameterTooltips = {
+  normal: {
+    mu: "Central tendency of the distribution",
+    sigma: "Spread of the distribution (must be > 0)",
+  },
+  lognormal: {
+    mu: "Mean of the underlying normal distribution",
+    sigma: "Volatility of the underlying normal distribution",
+  },
+  studentt: {
+    nu: "Degrees of freedom (controls tail heaviness, must be ≥ 1)",
+  },
+  cauchy: {
+    x0: "Central location parameter",
+    gamma: "Scale parameter (must be > 0)",
+  },
+  beta: {
+    alpha: "First shape parameter (must be > 0)",
+    beta: "Second shape parameter (must be > 0)",
+  },
+  gamma: {
+    k: "Shape parameter (must be > 0)",
+    theta: "Scale parameter (must be > 0)",
+  },
+  binomial: {
+    p: "Probability of success (between 0 and 1)",
   },
 };
 
@@ -139,14 +198,52 @@ const ProbabilityDistributionsPage = () => {
     }));
   };
 
+  const validateInputs = () => {
+    const constraints = parameterConstraints[distributionType] || {};
+    return Object.entries(constraints).every(([param, { min, max }]) => {
+      const value = inputs[param];
+      return (
+        (min === undefined || value >= min) &&
+        (max === undefined || value <= max)
+      );
+    });
+  };
+
+  const getFinancialUseCases = () => {
+    const useCases = {
+      normal: ["Portfolio returns", "Risk factor modeling"],
+      uniform: ["Random number generation", "Scenario analysis"],
+      exponential: ["Credit default timing", "Insurance claims"],
+      poisson: ["Market crash modeling", "Operational risk events"],
+      binomial: ["Option exercise probability", "Credit default swaps"],
+      lognormal: ["Stock prices", "Real estate values"],
+      studentt: ["VaR calculations", "Small sample analysis"],
+      cauchy: ["Extreme risk modeling", "Market crash scenarios"],
+      beta: ["Recovery rates", "Default probabilities"],
+      gamma: ["Insurance claims", "Operational risk"],
+    };
+    return useCases[distributionType] || [];
+  };
+
   const simulateDistribution = async () => {
+    if (!validateInputs()) {
+      alert("Invalid parameters! Check input constraints.");
+      return;
+    }
+
     setIsLoading(true);
-    const simulate = await import(
-      `../../../utils/probability/${distributionType}.js`
-    );
-    const simulationResults = simulate.default(inputs);
-    setResults(simulationResults);
-    setIsLoading(false);
+    try {
+      const simulate = await import(
+        `../../../utils/probability/${distributionType}.js`
+      );
+      const simulationResults = simulate.default(inputs);
+      setResults(simulationResults);
+    } catch (error) {
+      console.error("Simulation error:", error);
+      alert("Error running simulation. Please check parameters.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -156,7 +253,8 @@ const ProbabilityDistributionsPage = () => {
           Probability Distributions
         </h1>
         <p className="text-gray-600">
-          Explore and visualize various probability distributions.
+          Explore and visualize various probability distributions used in
+          quantitative finance.
         </p>
       </div>
 
@@ -185,25 +283,35 @@ const ProbabilityDistributionsPage = () => {
           <div className="md:w-1/3 bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-xl font-bold mb-4">Input Parameters</h3>
             <div className="space-y-4">
-              {Object.entries(inputs).map(([key, value]) => (
-                <div key={key}>
-                  <label className="block mb-1 font-medium">
-                    {inputLabels[distributionType][key]}
-                  </label>
-                  <input
-                    type="number"
-                    className="border p-2 rounded w-full"
-                    value={value}
-                    onChange={(e) => handleInputChange(key, e.target.value)}
-                  />
-                </div>
-              ))}
+              {Object.entries(inputs).map(([key, value]) => {
+                const constraints =
+                  parameterConstraints[distributionType]?.[key] || {};
+                return (
+                  <div key={key} className="relative">
+                    <label className="block mb-1 font-medium">
+                      {inputLabels[distributionType][key]}
+                      <span className="ml-2 text-gray-500 text-sm">
+                        {parameterTooltips[distributionType]?.[key]}
+                      </span>
+                    </label>
+                    <input
+                      type="number"
+                      min={constraints.min}
+                      max={constraints.max}
+                      step={key === "p" ? 0.01 : key === "N" ? 1 : "any"}
+                      className="border p-2 rounded w-full"
+                      value={value}
+                      onChange={(e) => handleInputChange(key, e.target.value)}
+                    />
+                  </div>
+                );
+              })}
               <button
                 onClick={simulateDistribution}
                 disabled={isLoading}
-                className="w-full py-2 mt-4 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+                className="w-full py-2 mt-4 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
               >
-                {isLoading ? <LoadingDots color="white" /> : "Simulate"}
+                {isLoading ? <LoadingDots color="white" /> : "Run Simulation"}
               </button>
             </div>
           </div>
@@ -216,25 +324,65 @@ const ProbabilityDistributionsPage = () => {
               </div>
             ) : results ? (
               <>
-                <h4 className="text-lg font-semibold mb-4">
-                  {results.description}
-                </h4>
-                <ul className="text-gray-700 space-y-2 mb-6">
-                  {Object.entries(results.statistics).map(([key, value]) => (
-                    <li key={key}>
-                      <strong>{key}:</strong> {value}
-                    </li>
-                  ))}
-                </ul>
-                <ProbabilityBarChart
-                  data={results.data.frequencies}
-                  labels={results.data.labels}
-                />
+                <div className="mb-6">
+                  <ProbabilityBarChart
+                    data={results.data.frequencies}
+                    labels={results.data.labels}
+                    distributionType={distributionType}
+                    params={inputs}
+                    isDiscrete={["binomial", "poisson"].includes(
+                      distributionType
+                    )}
+                  />
+                </div>
+
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div className="p-4 bg-blue-50 rounded-lg">
+                    <h4 className="text-lg font-semibold mb-3">Statistics</h4>
+                    <ul className="space-y-2">
+                      {Object.entries(results.statistics).map(
+                        ([key, value]) => (
+                          <li key={key} className="flex justify-between">
+                            <span className="font-medium">{key}:</span>
+                            <span>{value}</span>
+                          </li>
+                        )
+                      )}
+                    </ul>
+                  </div>
+
+                  <div className="p-4 bg-blue-50 rounded-lg">
+                    <h4 className="text-lg font-semibold mb-3">
+                      Financial Context
+                    </h4>
+                    <div className="mb-4">
+                      <h5 className="font-medium mb-2">Common Applications</h5>
+                      <ul className="list-disc pl-4 space-y-1">
+                        {getFinancialUseCases().map((useCase) => (
+                          <li key={useCase} className="text-gray-700">
+                            {useCase}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <h5 className="font-medium mb-2">Key Insights</h5>
+                      <p className="text-gray-700">
+                        {distributionExplanations[distributionType]}
+                        {distributionType === "lognormal" && (
+                          <span className="block mt-2 text-sm">
+                            Asset price model: S_t = S₀exp((μ - ½σ²)t + σW_t)
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </>
             ) : (
-              <p className="text-gray-500">
-                Run the simulation to view results.
-              </p>
+              <div className="h-64 flex items-center justify-center text-gray-500">
+                Run the simulation to view results
+              </div>
             )}
           </div>
         </div>
