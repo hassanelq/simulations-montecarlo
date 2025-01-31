@@ -1,13 +1,7 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { Chart as ChartJS, registerables } from "chart.js";
-import zoomPlugin from "chartjs-plugin-zoom";
-import annotationPlugin from "chartjs-plugin-annotation";
-
-// Register all necessary Chart.js components
-ChartJS.register(...registerables, zoomPlugin, annotationPlugin);
 
 const Bar = dynamic(() => import("react-chartjs-2").then((mod) => mod.Bar), {
   ssr: false,
@@ -21,6 +15,21 @@ const ProbabilityBarChart = ({
   isDiscrete = false,
 }) => {
   const chartRef = useRef(null);
+
+  // Register Chart.js and plugins on the client side
+  useEffect(() => {
+    import("chart.js").then(({ Chart: ChartJS }) => {
+      import("chartjs-plugin-zoom").then((zoomPlugin) => {
+        import("chartjs-plugin-annotation").then((annotationPlugin) => {
+          ChartJS.register(
+            ...ChartJS.registerables,
+            zoomPlugin.default,
+            annotationPlugin.default
+          );
+        });
+      });
+    });
+  }, []);
 
   // Color scheme based on distribution type
   const colorMap = {
