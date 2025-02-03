@@ -1,4 +1,4 @@
-import { processContinuousData, normalSample } from "./stats";
+import { processContinuousData, normalSample, sampleGamma } from "./stats";
 
 export default function simulateStudentT({ nu, N }) {
   if (nu <= 0) throw new Error("Degrees of freedom ν must be > 0");

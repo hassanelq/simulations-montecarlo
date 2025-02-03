@@ -117,13 +117,13 @@ const defaultInputs = {
   binomial: { n: 10, p: 0.5, N: 1000 },
   lognormal: { mu: 0, sigma: 1, N: 1000 },
   studentt: { nu: 5, N: 1000 },
-  cauchy: { x0: 0, gamma: 1, N: 1000 },
+  cauchy: { x0: 0, gamma: 1, N: 100 },
   beta: { alpha: 2, beta: 2, N: 1000 },
   gamma: { k: 2, theta: 2, N: 1000 },
-  levy: { alpha: 1, gamma: 1, N: 1000 },
-  pareto: { alpha: 2, xm: 1, N: 1000 },
+  levy: { alpha: 1, gamma: 1, N: 100 },
+  pareto: { alpha: 2, xm: 1, N: 100 },
   hypergeometric: { K: 10, N: 50, n: 5, simulations: 1000 },
-  weibull: { lambda: 1, k: 1, N: 1000 },
+  weibull: { lambda: 1, k: 1, N: 100 },
   triangular: { a: 0, b: 1, c: 0.5, N: 1000 },
 };
 
