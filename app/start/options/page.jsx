@@ -196,7 +196,7 @@ const OptionsPage = () => {
           </Disclosure>
         </div>
       </div>
-      ;{/* Simulation Interface */}
+      {/* Simulation Interface */}
       <div className="flex flex-col md:flex-row gap-6">
         {/* Inputs Section */}
         <div className="md:w-1/3 bg-white p-6 rounded-lg shadow-md">
