@@ -88,23 +88,23 @@ const OptionsPage = () => {
 
                       <ul className="list-disc pl-5 text-sm space-y-2">
                         <li>
-                          <span className="font-medium">\( S_0 \)</span> = Spot
-                          price ({inputs.stockPrice}$)
+                          <span className="font-medium">S0</span> = Spot price (
+                          {inputs.stockPrice}$)
                         </li>
                         <li>
-                          <span className="font-medium">\( r \)</span> =
-                          Risk-free rate ({inputs.riskFreeRate}%)
+                          <span className="font-medium">r</span> = Risk-free
+                          rate ({inputs.riskFreeRate}%)
                         </li>
                         <li>
-                          <span className="font-medium">\( \sigma \)</span> =
-                          Volatility ({inputs.volatility}%)
+                          <span className="font-medium">σ</span> = Volatility (
+                          {inputs.volatility}%)
                         </li>
                         <li>
-                          <span className="font-medium">\( T \)</span> = Time to
+                          <span className="font-medium">T</span> = Time to
                           maturity ({inputs.timeToMaturity} years)
                         </li>
                         <li>
-                          <span className="font-medium">\( Z \)</span> ∼{" "}
+                          <span className="font-medium">Z</span> ∼{" "}
                           <span
                             dangerouslySetInnerHTML={{
                               __html: katex.renderToString("\\mathcal{N}(0,1)"),

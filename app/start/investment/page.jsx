@@ -87,24 +87,24 @@ const InvestmentPage = () => {
 
                       <ul className="list-disc pl-5 text-sm space-y-2">
                         <li>
-                          <span className="font-medium">\( S_t \)</span> =
-                          Portfolio value at year {`t`} (Current: $
+                          <span className="font-medium">St</span> = Portfolio
+                          value at year {`t`} (Current: $
                           {inputs.initialInvestment})
                         </li>
                         <li>
-                          <span className="font-medium">\( \mu \)</span> =
-                          Expected annual return ({inputs.annualReturn}%)
+                          <span className="font-medium">μ</span> = Expected
+                          annual return ({inputs.annualReturn}%)
                         </li>
                         <li>
-                          <span className="font-medium">\( \sigma \)</span> =
-                          Annual volatility ({inputs.annualVolatility}%)
+                          <span className="font-medium">σ</span> = Annual
+                          volatility ({inputs.annualVolatility}%)
                         </li>
                         <li>
-                          <span className="font-medium">\( C \)</span> = Annual
+                          <span className="font-medium">C</span> = Annual
                           contribution (${inputs.annualContribution})
                         </li>
                         <li>
-                          <span className="font-medium">\( Z \)</span> ∼{" "}
+                          <span className="font-medium">Z</span> ∼{" "}
                           <span
                             dangerouslySetInnerHTML={{
                               __html: katex.renderToString("\\mathcal{N}(0,1)"),
@@ -171,15 +171,15 @@ const InvestmentPage = () => {
                     </div>
                     <ul className="list-disc pl-5 mt-2 text-sm space-y-2">
                       <li>
-                        <span className="font-medium">\( G \)</span> =
-                        Investment goal (${inputs.investmentGoal})
+                        <span className="font-medium">G</span> = Investment goal
+                        (${inputs.investmentGoal})
                       </li>
                       <li>
-                        <span className="font-medium">\( S_T \)</span> = Final
+                        <span className="font-medium">ST</span> = Final
                         portfolio value
                       </li>
                       <li>
-                        <span className="font-medium">\( N \)</span> = Number of
+                        <span className="font-medium">N</span> = Number of
                         simulations ({inputs.numSimulations})
                       </li>
                     </ul>
