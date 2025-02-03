@@ -16,8 +16,8 @@ export default function simulateExponential({ lambda, N }) {
   result.statistics = {
     ...result.statistics,
     "Rate Parameter (λ)": lambda.toFixed(4),
-    "Theoretical Mean": (1 / lambda).toFixed(4),
-    "Theoretical Variance": (1 / lambda ** 2).toFixed(4),
+    // "Theoretical Mean": (1 / lambda).toFixed(4),
+    // "Theoretical Variance": (1 / lambda ** 2).toFixed(4),
   };
 
   return result;

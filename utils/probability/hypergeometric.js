@@ -37,7 +37,7 @@ export default function simulateHypergeometric({
     "Population Successes": K,
     "Population Size": populationSize,
     "Sample Size": sampleSize,
-    "Theoretical Mean": ((K * sampleSize) / populationSize).toFixed(4),
+    // "Theoretical Mean": ((K * sampleSize) / populationSize).toFixed(4),
   };
 
   return result;

@@ -17,9 +17,9 @@ export default function simulateLognormal({ mu, sigma, N }) {
     ...result.statistics,
     "Log-Mean (μ)": mu.toFixed(4),
     "Log-Std Dev (σ)": sigma.toFixed(4),
-    "Theoretical Mean": Math.exp(mu + sigma ** 2 / 2).toFixed(4),
-    "Theoretical Variance":
-      (Math.exp(sigma ** 2) - 1) * Math.exp(2 * mu + sigma ** 2).toFixed(4),
+    // "Theoretical Mean": Math.exp(mu + sigma ** 2 / 2).toFixed(4),
+    // "Theoretical Variance":
+    //   (Math.exp(sigma ** 2) - 1) * Math.exp(2 * mu + sigma ** 2).toFixed(4),
   };
 
   return result;

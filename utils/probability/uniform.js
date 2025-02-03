@@ -9,8 +9,8 @@ export default function simulateUniform({ a, b, N }) {
 
   result.statistics = {
     ...result.statistics,
-    "Theoretical Mean": ((a + b) / 2).toFixed(4),
-    "Theoretical Variance": ((b - a) ** 2 / 12).toFixed(4),
+    // "Theoretical Mean": ((a + b) / 2).toFixed(4),
+    // "Theoretical Variance": ((b - a) ** 2 / 12).toFixed(4),
   };
 
   return result;

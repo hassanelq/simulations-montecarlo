@@ -52,7 +52,7 @@ export function processContinuousData(data, description) {
     statistics: {
       Mean: mean(data).toFixed(4),
       Median: median(data).toFixed(4),
-      "Std Dev": sampleStandardDeviation(data).toFixed(4),
+      // "Std Dev": sampleStandardDeviation(data).toFixed(4),
       Skewness: skewness(data).toFixed(4),
       Kurtosis: kurtosis(data).toFixed(4),
     },
@@ -135,7 +135,7 @@ export function processDiscreteData(data, description) {
     statistics: {
       Mean: mean(data).toFixed(4),
       Median: median(data).toFixed(4),
-      "Std Dev": sampleStandardDeviation(data).toFixed(4),
+      // "Std Dev": sampleStandardDeviation(data).toFixed(4),
       Skewness: skewness(data).toFixed(4),
       Kurtosis: kurtosis(data).toFixed(4),
     },

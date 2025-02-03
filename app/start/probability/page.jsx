@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import ProbabilityBarChart from "../../Components/Charts/ProbabilityBarChart";
 import LoadingDots from "../../Components/ui/LoadingDots";
 
@@ -304,12 +304,47 @@ const getFinancialUseCases = (distributionType) => {
   return useCases[distributionType] || [];
 };
 
+const distributionCategories = {
+  continuous: {
+    name: "Continuous Distributions",
+    types: [
+      "normal",
+      "uniform",
+      "exponential",
+      "lognormal",
+      "studentt",
+      "beta",
+      "gamma",
+      "weibull",
+      "triangular",
+    ],
+  },
+  discrete: {
+    name: "Discrete Distributions",
+    types: ["binomial", "poisson", "hypergeometric"],
+  },
+  extreme: {
+    name: "Extreme/Rare Event Distributions",
+    types: ["cauchy", "levy", "pareto"],
+  },
+};
+
 const ProbabilityDistributionsPage = () => {
   const [distributionType, setDistributionType] = useState(null);
   const [inputs, setInputs] = useState({});
   const [results, setResults] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const scrollRef = useRef(null); // Add scroll ref
+
+  useEffect(() => {
+    if (distributionType && scrollRef.current) {
+      scrollRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [distributionType]);
 
   const handleDistributionChange = (type) => {
     setDistributionType(type);
@@ -373,26 +408,39 @@ const ProbabilityDistributionsPage = () => {
 
       <div className="max-w-4xl mx-auto text-center">
         <h2 className="text-2xl font-bold mb-6">Select a Distribution</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {distributions.map((dist) => (
-            <div
-              key={dist.type}
-              onClick={() => handleDistributionChange(dist.type)}
-              className={`cursor-pointer p-6 rounded-lg shadow-md transition transform hover:scale-105 ${
-                distributionType === dist.type
-                  ? "bg-blue-100 border-blue-500 border-2"
-                  : "bg-white"
-              }`}
-            >
-              <h3 className="text-lg font-bold">{dist.name}</h3>
-              <p className="text-gray-600 mt-2">{dist.description}</p>
-            </div>
-          ))}
+        <div className="space-y-12">
+          {Object.entries(distributionCategories).map(
+            ([categoryKey, category]) => (
+              <div key={categoryKey} className="mb-12">
+                <h3 className="text-xl font-semibold mb-6 text-gray-700">
+                  {category.name}
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {distributions
+                    .filter((dist) => category.types.includes(dist.type))
+                    .map((dist) => (
+                      <div
+                        key={dist.type}
+                        onClick={() => handleDistributionChange(dist.type)}
+                        className={`cursor-pointer p-6 rounded-lg shadow-md transition transform hover:scale-105 ${
+                          distributionType === dist.type
+                            ? "bg-blue-100 border-blue-500 border-2"
+                            : "bg-white"
+                        }`}
+                      >
+                        <h3 className="text-lg font-bold">{dist.name}</h3>
+                        <p className="text-gray-600 mt-2">{dist.description}</p>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )
+          )}
         </div>
       </div>
 
       {distributionType && (
-        <div className="flex flex-col md:flex-row gap-6">
+        <div ref={scrollRef} className="flex flex-col md:flex-row gap-6">
           <div className="md:w-1/3 bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-xl font-bold mb-4">Input Parameters</h3>
             <div className="space-y-4">

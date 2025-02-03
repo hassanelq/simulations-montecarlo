@@ -13,8 +13,8 @@ export default function simulateGamma({ k, theta, N }) {
     ...result.statistics,
     "Shape Parameter (k)": k.toFixed(4),
     "Scale Parameter (θ)": theta.toFixed(4),
-    "Theoretical Mean": (k * theta).toFixed(4),
-    "Theoretical Variance": (k * theta ** 2).toFixed(4),
+    // "Theoretical Mean": (k * theta).toFixed(4),
+    // "Theoretical Variance": (k * theta ** 2).toFixed(4),
   };
 
   return result;

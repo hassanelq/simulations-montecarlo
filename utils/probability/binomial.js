@@ -21,8 +21,8 @@ export default function simulateBinomial({ n, p, N }) {
     ...result.statistics,
     "Number of Trials": n,
     "Success Probability": p.toFixed(4),
-    "Theoretical Mean": (n * p).toFixed(4),
-    "Theoretical Variance": (n * p * (1 - p)).toFixed(4),
+    // "Theoretical Mean": (n * p).toFixed(4),
+    // "Theoretical Variance": (n * p * (1 - p)).toFixed(4),
   };
 
   return result;

@@ -21,8 +21,8 @@ export default function simulatePoisson({ lambda, N }) {
   result.statistics = {
     ...result.statistics,
     "Rate Parameter (λ)": lambda.toFixed(4),
-    "Theoretical Mean": lambda.toFixed(4),
-    "Theoretical Variance": lambda.toFixed(4),
+    // "Theoretical Mean": lambda.toFixed(4),
+    // "Theoretical Variance": lambda.toFixed(4),
   };
 
   return result;

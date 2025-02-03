@@ -20,11 +20,11 @@ export default function simulateTriangular({ a, b, c, N }) {
 
   result.statistics = {
     ...result.statistics,
-    "Theoretical Mean": ((a + b + c) / 3).toFixed(4),
-    "Theoretical Variance": (
-      (a ** 2 + b ** 2 + c ** 2 - a * b - a * c - b * c) /
-      18
-    ).toFixed(4),
+    // "Theoretical Mean": ((a + b + c) / 3).toFixed(4),
+    // "Theoretical Variance": (
+    //   (a ** 2 + b ** 2 + c ** 2 - a * b - a * c - b * c) /
+    //   18
+    // ).toFixed(4),
   };
 
   return result;

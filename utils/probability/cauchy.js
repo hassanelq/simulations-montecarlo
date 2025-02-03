@@ -36,8 +36,8 @@ export default function simulateCauchy({ x0, gamma, N }) {
   // Add Cauchy-specific statistics
   result.statistics = {
     ...result.statistics,
-    "Location Parameter (x₀)": x0.toFixed(4),
-    "Scale Parameter (γ)": gamma.toFixed(4),
+    "Location Parameter (x₀)": x0.toFixed(2),
+    "Scale Parameter (γ)": gamma.toFixed(2),
   };
 
   return result;

@@ -14,12 +14,12 @@ export default function simulateStudentT({ nu, N }) {
 
   result.statistics = {
     ...result.statistics,
-    "Degrees of Freedom": nu.toFixed(4),
-    "Theoretical Mean": (nu > 1 ? 0 : "Undefined").toString(),
-    "Theoretical Variance": (nu > 2
-      ? (nu / (nu - 2)).toFixed(4)
-      : "Undefined"
-    ).toString(),
+    "Degrees of Freedom": nu.toFixed(2),
+    // "Theoretical Mean": (nu > 1 ? 0 : "Undefined").toString(),
+    // "Theoretical Variance": (nu > 2
+    //   ? (nu / (nu - 2)).toFixed(4)
+    //   : "Undefined"
+    // ).toString(),
   };
 
   return result;

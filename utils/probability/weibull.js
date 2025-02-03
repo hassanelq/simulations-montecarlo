@@ -17,8 +17,8 @@ export default function simulateWeibull({ lambda, k, N }) {
 
   result.statistics = {
     ...result.statistics,
-    "Scale Parameter (λ)": lambda.toFixed(4),
-    "Shape Parameter (k)": k.toFixed(4),
+    "Scale Parameter (λ)": lambda.toFixed(2),
+    "Shape Parameter (k)": k.toFixed(2),
   };
 
   return result;
