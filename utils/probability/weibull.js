@@ -1,4 +1,4 @@
-import { processContinuousData } from "./stats";
+import { processContinuousData, sampleGamma } from "./stats";
 
 export default function simulateWeibull({ lambda, k, N }) {
   if (lambda <= 0) throw new Error("Scale parameter λ must be > 0");
@@ -19,11 +19,6 @@ export default function simulateWeibull({ lambda, k, N }) {
     ...result.statistics,
     "Scale Parameter (λ)": lambda.toFixed(4),
     "Shape Parameter (k)": k.toFixed(4),
-    "Theoretical Mean": (lambda * gamma(1 + 1 / k)).toFixed(4),
-    "Theoretical Variance": (
-      lambda ** 2 *
-      (gamma(1 + 2 / k) - gamma(1 + 1 / k) ** 2)
-    ).toFixed(4),
   };
 
   return result;
