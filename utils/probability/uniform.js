@@ -1,26 +1,17 @@
-import { mean, standardDeviation, median } from "./stats";
+import { processContinuousData } from "./stats";
 
 export default function simulateUniform({ a, b, N }) {
+  if (a >= b) throw new Error("Start (a) must be less than end (b)");
+  if (N <= 0) throw new Error("Number of simulations must be positive");
+
   const rawData = Array.from({ length: N }, () => Math.random() * (b - a) + a);
+  const result = processContinuousData(rawData, `Uniform (a=${a}, b=${b})`);
 
-  const frequencies = rawData.reduce((acc, value) => {
-    const bin = Math.floor(value * 10) / 10;
-    acc[bin] = (acc[bin] || 0) + 1;
-    return acc;
-  }, {});
-
-  const labels = Object.keys(frequencies).sort((a, b) => a - b);
-  const dataFrequencies = labels.map((key) => frequencies[key]);
-
-  return {
-    description: `Uniform Distribution (a=${a}, b=${b})`,
-    statistics: {
-      Mean: mean(rawData).toFixed(4),
-      "Standard Deviation": standardDeviation(rawData).toFixed(4),
-      Median: median(rawData).toFixed(4),
-      Max: Math.max(...rawData).toFixed(4),
-      Min: Math.min(...rawData).toFixed(4),
-    },
-    data: { labels, frequencies: dataFrequencies },
+  result.statistics = {
+    ...result.statistics,
+    "Theoretical Mean": ((a + b) / 2).toFixed(4),
+    "Theoretical Variance": ((b - a) ** 2 / 12).toFixed(4),
   };
+
+  return result;
 }

@@ -1,10 +1,14 @@
-import { mean, median } from "./stats";
+import { processDiscreteData } from "./stats";
 
 export default function simulatePoisson({ lambda, N }) {
+  if (lambda <= 0) throw new Error("Rate parameter λ must be > 0");
+  if (N <= 0) throw new Error("Number of simulations must be positive");
+
   const rawData = Array.from({ length: N }, () => {
-    let L = Math.exp(-lambda);
     let k = 0;
     let p = 1;
+    const L = Math.exp(-lambda);
+
     while (p > L) {
       k++;
       p *= Math.random();
@@ -12,22 +16,14 @@ export default function simulatePoisson({ lambda, N }) {
     return k - 1;
   });
 
-  const frequencies = rawData.reduce((acc, value) => {
-    acc[value] = (acc[value] || 0) + 1;
-    return acc;
-  }, {});
+  const result = processDiscreteData(rawData, `Poisson (λ=${lambda})`);
 
-  const labels = Object.keys(frequencies).sort((a, b) => a - b);
-  const dataFrequencies = labels.map((key) => frequencies[key]);
-
-  return {
-    description: `Poisson Distribution (λ=${lambda})`,
-    statistics: {
-      Mean: mean(rawData).toFixed(4),
-      Median: median(rawData).toFixed(4),
-      Max: Math.max(...rawData).toFixed(4),
-      Min: Math.min(...rawData).toFixed(4),
-    },
-    data: { labels, frequencies: dataFrequencies },
+  result.statistics = {
+    ...result.statistics,
+    "Rate Parameter (λ)": lambda.toFixed(4),
+    "Theoretical Mean": lambda.toFixed(4),
+    "Theoretical Variance": lambda.toFixed(4),
   };
+
+  return result;
 }

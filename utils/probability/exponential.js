@@ -1,29 +1,24 @@
-import { mean, standardDeviation, median } from "./stats";
+import { processContinuousData } from "./stats";
 
 export default function simulateExponential({ lambda, N }) {
+  // Parameter validation
+  if (lambda <= 0) throw new Error("Lambda must be positive");
+  if (N <= 0) throw new Error("Number of simulations must be positive");
+
   const rawData = Array.from(
     { length: N },
-    () => -Math.log(1 - Math.random()) / lambda
+    () => -Math.log(Math.random()) / lambda
   );
 
-  const frequencies = rawData.reduce((acc, value) => {
-    const bin = Math.floor(value * 10) / 10;
-    acc[bin] = (acc[bin] || 0) + 1;
-    return acc;
-  }, {});
+  const result = processContinuousData(rawData, `Exponential (λ=${lambda})`);
 
-  const labels = Object.keys(frequencies).sort((a, b) => a - b);
-  const dataFrequencies = labels.map((key) => frequencies[key]);
-
-  return {
-    description: `Exponential Distribution (λ=${lambda})`,
-    statistics: {
-      Mean: mean(rawData).toFixed(4),
-      "Standard Deviation": standardDeviation(rawData).toFixed(4),
-      Median: median(rawData).toFixed(4),
-      Max: Math.max(...rawData).toFixed(4),
-      Min: Math.min(...rawData).toFixed(4),
-    },
-    data: { labels, frequencies: dataFrequencies },
+  // Add exponential-specific statistics
+  result.statistics = {
+    ...result.statistics,
+    "Rate Parameter (λ)": lambda.toFixed(4),
+    "Theoretical Mean": (1 / lambda).toFixed(4),
+    "Theoretical Variance": (1 / lambda ** 2).toFixed(4),
   };
+
+  return result;
 }

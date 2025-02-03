@@ -29,12 +29,12 @@ export function skewness(data) {
   );
 }
 
-// New helper functions
 export function processContinuousData(data, description) {
   const min = Math.min(...data);
   const max = Math.max(...data);
   const binCount = 50;
-  const step = (max - min) / binCount;
+  const totalRange = max - min;
+  const step = totalRange / binCount;
 
   const frequencies = Array(binCount).fill(0);
 
@@ -56,7 +56,16 @@ export function processContinuousData(data, description) {
       Skewness: skewness(data).toFixed(4),
       Kurtosis: kurtosis(data).toFixed(4),
     },
-    data: { labels, frequencies },
+    data: {
+      labels,
+      frequencies,
+      meta: {
+        binCount,
+        totalRange,
+        min,
+        max,
+      },
+    },
   };
 }
 
@@ -144,4 +153,12 @@ export function validateHypergeometric(K, N, n) {
 export function validateTriangular(a, b, c) {
   if (a >= b) throw new Error("Minimum (a) must be less than maximum (b)");
   if (c < a || c > b) throw new Error("Mode (c) must be between a and b");
+}
+
+export function factorial(n) {
+  return n <= 1 ? 1 : n * factorial(n - 1);
+}
+
+export function binomialCoefficient(n, k) {
+  return factorial(n) / (factorial(k) * factorial(n - k));
 }

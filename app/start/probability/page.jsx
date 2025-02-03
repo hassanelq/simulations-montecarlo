@@ -145,11 +145,7 @@ const parameterConstraints = {
     n: { min: 1 },
   },
   weibull: { lambda: { min: 0.01 }, k: { min: 0.01 } },
-  triangular: {
-    a: {},
-    b: {},
-    c: {},
-  },
+  triangular: {}, // No constraints needed for a, b, c
 };
 
 const inputLabels = {
@@ -203,24 +199,29 @@ const inputLabels = {
   levy: {
     alpha: "Stability parameter (0 < α ≤ 2)",
     gamma: "Scale parameter (γ > 0)",
+    N: "Number of Simulations",
   },
   pareto: {
     alpha: "Shape parameter (α > 0)",
     xm: "Scale parameter (xₘ > 0)",
+    N: "Number of Simulations",
   },
   hypergeometric: {
     K: "Number of success states in population",
     N: "Population size",
     n: "Number of draws",
+    simulations: "Number of Simulations",
   },
   weibull: {
     lambda: "Scale parameter (λ > 0)",
     k: "Shape parameter (k > 0)",
+    N: "Number of Simulations",
   },
   triangular: {
     a: "Minimum value",
     b: "Maximum value",
     c: "Mode (most likely value)",
+    N: "Number of Simulations",
   },
 };
 
@@ -250,6 +251,29 @@ const parameterTooltips = {
   },
   binomial: {
     p: "Probability of success (between 0 and 1)",
+  },
+  exponential: {
+    lambda: "Rate parameter (must be > 0)",
+  },
+  poisson: {
+    lambda: "Rate parameter (must be > 0)",
+  },
+  levy: {
+    alpha: "Stability parameter (0 < α ≤ 2)",
+    gamma: "Scale parameter (must be > 0)",
+  },
+  pareto: {
+    alpha: "Shape parameter (must be > 0)",
+    xm: "Scale parameter (must be > 0)",
+  },
+  weibull: {
+    lambda: "Scale parameter (must be > 0)",
+    k: "Shape parameter (must be > 0)",
+  },
+  triangular: {
+    a: "Minimum value",
+    b: "Maximum value",
+    c: "Mode (most likely value)",
   },
 };
 
@@ -285,11 +309,13 @@ const ProbabilityDistributionsPage = () => {
   const [inputs, setInputs] = useState({});
   const [results, setResults] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleDistributionChange = (type) => {
     setDistributionType(type);
     setInputs(defaultInputs[type]);
     setResults(null);
+    setError(null);
   };
 
   const handleInputChange = (key, value) => {
@@ -312,11 +338,13 @@ const ProbabilityDistributionsPage = () => {
 
   const simulateDistribution = async () => {
     if (!validateInputs()) {
-      alert("Invalid parameters! Check input constraints.");
+      setError("Invalid parameters! Check input constraints.");
       return;
     }
 
     setIsLoading(true);
+    setError(null);
+
     try {
       const simulate = await import(
         `../../../utils/probability/${distributionType}.js`
@@ -325,7 +353,7 @@ const ProbabilityDistributionsPage = () => {
       setResults(simulationResults);
     } catch (error) {
       console.error("Simulation error:", error);
-      alert("Error running simulation. Please check parameters.");
+      setError("Error running simulation. Please check parameters.");
     } finally {
       setIsLoading(false);
     }
@@ -391,6 +419,7 @@ const ProbabilityDistributionsPage = () => {
                   </div>
                 );
               })}
+              {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
               <button
                 onClick={simulateDistribution}
                 disabled={isLoading}
@@ -443,11 +472,13 @@ const ProbabilityDistributionsPage = () => {
                     <div className="mb-4">
                       <h5 className="font-medium mb-2">Common Applications</h5>
                       <ul className="list-disc pl-4 space-y-1">
-                        {getFinancialUseCases().map((useCase) => (
-                          <li key={useCase} className="text-gray-700">
-                            {useCase}
-                          </li>
-                        ))}
+                        {getFinancialUseCases(distributionType).map(
+                          (useCase) => (
+                            <li key={useCase} className="text-gray-700">
+                              {useCase}
+                            </li>
+                          )
+                        )}
                       </ul>
                     </div>
                     <div>

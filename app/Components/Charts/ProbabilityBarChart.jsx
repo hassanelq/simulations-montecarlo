@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 
 const Bar = dynamic(() => import("react-chartjs-2").then((mod) => mod.Bar), {
@@ -17,26 +17,68 @@ const ProbabilityBarChart = ({
   const chartRef = useRef(null);
 
   // Register Chart.js and plugins on the client side
+  const [chartReady, setChartReady] = useState(false);
+
+  // Updated chart registration in ProbabilityBarChart.jsx
   useEffect(() => {
-    import("chart.js").then(({ Chart: ChartJS }) => {
-      import("chartjs-plugin-zoom").then((zoomPlugin) => {
-        import("chartjs-plugin-annotation").then((annotationPlugin) => {
-          ChartJS.register(
-            ...ChartJS.registerables,
-            zoomPlugin.default,
-            annotationPlugin.default
-          );
-        });
-      });
-    });
+    const loadChart = async () => {
+      const {
+        Chart: ChartJS,
+        LinearScale,
+        CategoryScale,
+        BarController,
+        BarElement,
+        LineController,
+        LineElement,
+        PointElement,
+        Title,
+        Tooltip,
+        Legend,
+      } = await import("chart.js");
+
+      const zoom = await import("chartjs-plugin-zoom");
+      const annotation = await import("chartjs-plugin-annotation");
+
+      ChartJS.register(
+        LinearScale,
+        CategoryScale,
+        BarController,
+        BarElement,
+        LineController,
+        LineElement,
+        PointElement,
+        Title,
+        Tooltip,
+        Legend,
+        zoom.default,
+        annotation.default
+      );
+
+      setChartReady(true);
+    };
+
+    loadChart();
   }, []);
 
   // Color scheme based on distribution type
   const colorMap = {
     normal: { bg: "rgba(54, 162, 235, 0.5)", border: "rgba(54, 162, 235, 1)" },
-    lognormal: {
+    uniform: { bg: "rgba(255, 159, 64, 0.5)", border: "rgba(255, 159, 64, 1)" },
+    exponential: {
+      bg: "rgba(75, 192, 192, 0.5)",
+      border: "rgba(75, 192, 192, 1)",
+    },
+    poisson: {
+      bg: "rgba(153, 102, 255, 0.5)",
+      border: "rgba(153, 102, 255, 1)",
+    },
+    binomial: {
       bg: "rgba(255, 99, 132, 0.5)",
       border: "rgba(255, 99, 132, 1)",
+    },
+    lognormal: {
+      bg: "rgba(255, 206, 86, 0.5)",
+      border: "rgba(255, 206, 86, 1)",
     },
     studentt: {
       bg: "rgba(75, 192, 192, 0.5)",
@@ -46,12 +88,38 @@ const ProbabilityBarChart = ({
       bg: "rgba(153, 102, 255, 0.5)",
       border: "rgba(153, 102, 255, 1)",
     },
+    beta: { bg: "rgba(255, 159, 64, 0.5)", border: "rgba(255, 159, 64, 1)" },
+    gamma: { bg: "rgba(54, 162, 235, 0.5)", border: "rgba(54, 162, 235, 1)" },
+    levy: { bg: "rgba(255, 99, 132, 0.5)", border: "rgba(255, 99, 132, 1)" },
+    pareto: { bg: "rgba(75, 192, 192, 0.5)", border: "rgba(75, 192, 192, 1)" },
+    hypergeometric: {
+      bg: "rgba(153, 102, 255, 0.5)",
+      border: "rgba(153, 102, 255, 1)",
+    },
+    weibull: { bg: "rgba(255, 159, 64, 0.5)", border: "rgba(255, 159, 64, 1)" },
+    triangular: {
+      bg: "rgba(54, 162, 235, 0.5)",
+      border: "rgba(54, 162, 235, 1)",
+    },
     default: { bg: "rgba(255, 159, 64, 0.5)", border: "rgba(255, 159, 64, 1)" },
   };
 
   const { bg, border } = colorMap[distributionType] || colorMap.default;
 
-  // Theoretical PDF calculation
+  // Define binomialCoefficient
+  const binomialCoefficient = (n, k) => {
+    if (k === 0 || k === n) return 1;
+    if (k === 1) return n;
+    return binomialCoefficient(n - 1, k - 1) + binomialCoefficient(n - 1, k);
+  };
+
+  // Define gamma
+  const gamma = (n) => {
+    if (n === 1) return 1;
+    if (n === 0.5) return Math.sqrt(Math.PI);
+    return (n - 1) * gamma(n - 1);
+  };
+  // Theoretical PDF/PMF calculation
   const theoreticalPDF = labels.map((label) => {
     const x = parseFloat(label);
     switch (distributionType) {
@@ -65,17 +133,54 @@ const ProbabilityBarChart = ({
           (1 / (x * params.sigma * Math.sqrt(2 * Math.PI))) *
           Math.exp(-0.5 * ((Math.log(x) - params.mu) / params.sigma) ** 2)
         );
+      case "uniform":
+        return 1 / (params.b - params.a);
+      case "exponential":
+        return params.lambda * Math.exp(-params.lambda * x);
+      case "poisson":
+        return (
+          (Math.pow(params.lambda, x) * Math.exp(-params.lambda)) / factorial(x)
+        );
+      case "binomial":
+        return (
+          binomialCoefficient(params.n, x) *
+          Math.pow(params.p, x) *
+          Math.pow(1 - params.p, params.n - x)
+        );
+      case "gamma":
+        return (
+          (Math.pow(x, params.k - 1) * Math.exp(-x / params.theta)) /
+          (Math.pow(params.theta, params.k) * gamma(params.k))
+        );
+
+      case "pareto":
+        return (
+          (params.alpha * Math.pow(params.xm, params.alpha)) /
+          Math.pow(x, params.alpha + 1)
+        );
+
+      case "poisson":
+        return (
+          (Math.pow(params.lambda, x) * Math.exp(-params.lambda)) / factorial(x)
+        );
       default:
         return null;
     }
   });
+
+  // Calculate bin width for continuous distributions
+  const binWidth = isDiscrete
+    ? 1 // Discrete distributions have integer bins
+    : parseFloat(labels[1]) - parseFloat(labels[0]); // Continuous distributions
 
   const chartData = {
     labels,
     datasets: [
       {
         label: isDiscrete ? "Probability Mass" : "Frequency Density",
-        data,
+        data: isDiscrete
+          ? data // For discrete distributions, use raw counts
+          : data.map((val) => val / binWidth), // For continuous, normalize to density
         backgroundColor: bg,
         borderColor: border,
         borderWidth: 1,
@@ -152,6 +257,10 @@ const ProbabilityBarChart = ({
         },
         type: isDiscrete ? "category" : "linear",
         grid: { display: false },
+        ...(!isDiscrete && {
+          offset: true,
+          bounds: "ticks",
+        }),
       },
       y: {
         title: {
@@ -159,6 +268,10 @@ const ProbabilityBarChart = ({
           text: isDiscrete ? "Probability" : "Density",
         },
         beginAtZero: true,
+        ...(!isDiscrete && {
+          type: "linear",
+          min: 0,
+        }),
       },
     },
     interaction: {
@@ -176,12 +289,14 @@ const ProbabilityBarChart = ({
 
   return (
     <div className="w-full h-[32rem] relative">
-      <Bar
-        ref={chartRef}
-        data={chartData}
-        options={options}
-        datasetIdKey="distributionChart"
-      />
+      {chartReady && (
+        <Bar
+          ref={chartRef}
+          data={chartData}
+          options={options}
+          datasetIdKey="distributionChart"
+        />
+      )}
       <div className="absolute top-2 right-2 flex gap-2">
         <button
           className="px-2 py-1 bg-white shadow rounded text-sm"
