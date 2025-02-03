@@ -2,9 +2,12 @@
 
 import React, { useState, useCallback } from "react";
 import LineChart from "../../Components/Charts/MCLineChart";
-import BarChart from "../../Components/Charts/MCBarChart";
 import LoadingDots from "../../Components/ui/LoadingDots";
 import monteCarloOptions from "../../../utils/monteCarlo/options";
+import { Disclosure } from "@headlessui/react";
+import { ChevronUpIcon } from "@heroicons/react/20/solid";
+import katex from "katex";
+import "katex/dist/katex.min.css";
 
 const OptionsPage = () => {
   const [inputs, setInputs] = useState({
@@ -47,13 +50,153 @@ const OptionsPage = () => {
         <h1 className="text-3xl font-extrabold mb-4">
           Options Pricing Simulation
         </h1>
-        <p className="text-gray-600 mb-6">
-          Estimate option contract values using Monte Carlo methods. Analyze
-          price paths and probability distributions for European-style options.
-        </p>
-      </div>
 
-      {/* Simulation Interface */}
+        <div className="space-y-4 mb-6">
+          <p className="text-gray-600">
+            Monte Carlo simulation for European options pricing based on the
+            Black-Scholes-Merton model.
+          </p>
+
+          <Disclosure>
+            {({ open }) => (
+              <>
+                <Disclosure.Button className="flex items-center justify-center w-full gap-2 text-blue-600 hover:text-blue-800 font-medium">
+                  <span>{open ? "Hide" : "View"} Theoretical Background</span>
+                  <ChevronUpIcon
+                    className={`${open ? "transform rotate-180" : ""} w-5 h-5`}
+                  />
+                </Disclosure.Button>
+
+                <Disclosure.Panel className="mt-6 text-left space-y-6">
+                  {/* Mathematical Model */}
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h3 className="font-semibold mb-3 text-lg">
+                      1. Asset Price Model
+                    </h3>
+                    <div className="space-y-2">
+                      <p className="text-sm">Geometric Brownian Motion:</p>
+                      <div className="bg-white p-3 rounded text-center font-mono">
+                        <span
+                          className="text-base"
+                          dangerouslySetInnerHTML={{
+                            __html: katex.renderToString(
+                              "S_T = S_0 \\cdot \\exp\\left[\\left(r - q - \\frac{\\sigma^2}{2}\\right)T + \\sigma\\sqrt{T}Z\\right]"
+                            ),
+                          }}
+                        />
+                      </div>
+
+                      <ul className="list-disc pl-5 text-sm space-y-2">
+                        <li>
+                          <span className="font-medium">\( S_0 \)</span> = Spot
+                          price ({inputs.stockPrice}$)
+                        </li>
+                        <li>
+                          <span className="font-medium">\( r \)</span> =
+                          Risk-free rate ({inputs.riskFreeRate}%)
+                        </li>
+                        <li>
+                          <span className="font-medium">\( \sigma \)</span> =
+                          Volatility ({inputs.volatility}%)
+                        </li>
+                        <li>
+                          <span className="font-medium">\( T \)</span> = Time to
+                          maturity ({inputs.timeToMaturity} years)
+                        </li>
+                        <li>
+                          <span className="font-medium">\( Z \)</span> ∼{" "}
+                          <span
+                            dangerouslySetInnerHTML={{
+                              __html: katex.renderToString("\\mathcal{N}(0,1)"),
+                            }}
+                          />
+                          (Standard normal random variable)
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Monte Carlo Algorithm */}
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h3 className="font-semibold mb-3 text-lg">
+                      2. Monte Carlo Algorithm
+                    </h3>
+                    <ol className="list-decimal pl-5 space-y-4 text-sm">
+                      <li>
+                        <span className="font-medium">
+                          Simulating Price Paths:
+                        </span>
+                        <div className="ml-4 mt-2 bg-blue-50 p-2 rounded">
+                          <code
+                            dangerouslySetInnerHTML={{
+                              __html: katex.renderToString(
+                                `\\text{for } i = 1 \\text{ to } N\\\\
+                          \\quad Z \\leftarrow \\mathcal{N}(0,1)\\\\
+                          \\quad S_T^{i} = S_0 \\cdot \\exp(...)\\\\
+                          \\quad \\text{payoff}^{i} = \\max(S_T^{i} - K, 0)`
+                              ),
+                            }}
+                          />
+                        </div>
+                      </li>
+
+                      <li>
+                        <span className="font-medium">
+                          Discounting Payoffs:
+                        </span>
+                        <div className="ml-4 mt-2 bg-white p-3 rounded text-center">
+                          <span
+                            className="text-base"
+                            dangerouslySetInnerHTML={{
+                              __html: katex.renderToString(
+                                "C = e^{-rT} \\cdot \\frac{1}{N} \\sum_{(i = 1)}^{N} \\text{payoff}^{i}"
+                              ),
+                            }}
+                          />
+                        </div>
+                      </li>
+                    </ol>
+                  </div>
+
+                  {/* ITM Probability */}
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h3 className="font-semibold mb-3 text-lg">
+                      3. In-the-Money (ITM) Probability
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                      <div className="bg-green-50 p-3 rounded">
+                        <p className="font-medium">Call Option:</p>
+                        <div className="mt-1">
+                          <span
+                            dangerouslySetInnerHTML={{
+                              __html: katex.renderToString(
+                                "\\mathbb{P}(S_T > K) = \\frac{\\text{Number of } S_T > K}{N}"
+                              ),
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="bg-red-50 p-3 rounded">
+                        <p className="font-medium">Put Option:</p>
+                        <div className="mt-1">
+                          <span
+                            dangerouslySetInnerHTML={{
+                              __html: katex.renderToString(
+                                "\\mathbb{P}(S_T < K) = \\frac{\\text{Number of } S_T < K}{N}"
+                              ),
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Disclosure.Panel>
+              </>
+            )}
+          </Disclosure>
+        </div>
+      </div>
+      ;{/* Simulation Interface */}
       <div className="flex flex-col md:flex-row gap-6">
         {/* Inputs Section */}
         <div className="md:w-1/3 bg-white p-6 rounded-lg shadow-md">

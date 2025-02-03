@@ -9,12 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.0",
+    "@heroicons/react": "^2.2.0",
     "@lottiefiles/react-lottie-player": "^3.6.0",
     "chart.js": "^4.4.0",
     "chartjs-plugin-annotation": "^3.0.1",
     "chartjs-plugin-zoom": "^2.0.1",
     "cls": "^0.1.5",
     "clsx": "^2.1.1",
+    "katex": "^0.16.21",
     "lodash": "^4.17.21",
     "lottie-react": "^2.4.1",
     "next": "15.0.2",
