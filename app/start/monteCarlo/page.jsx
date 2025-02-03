@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useCallback } from "react";
-import InputsForm from "../../Components/InputsForm";
+// import InputsForm from "../../Components/InputsForm";
 import LineChart from "../../Components/Charts/MCLineChart";
 import BarChart from "../../Components/Charts/MCBarChart";
 import LoadingDots from "../../Components/ui/LoadingDots";

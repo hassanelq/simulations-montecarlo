@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+
 import dynamic from "next/dynamic";
 import {
   Chart as ChartJS,
@@ -29,7 +30,6 @@ const Line = dynamic(() => import("react-chartjs-2").then((mod) => mod.Line), {
 import LoadingDots from "../../Components/ui/LoadingDots";
 
 import simulateWithDrift from "../../../utils/brownianMotion/simulateWithDrift";
-import simulateWithoutDrift from "../../../utils/brownianMotion/simulateWithoutDrift";
 import simulateOrnsteinUhlenbeck from "../../../utils/brownianMotion/simulateOrnsteinUhlenbeck";
 import simulateGeometricBrownianMotion from "../../../utils/brownianMotion/simulateGeometric";
 
@@ -86,8 +86,7 @@ function BrownianMotionPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const applications = [
-    { title: "Brownian Motion without Drift", key: "noDrift" },
-    { title: "Brownian Motion with Drift", key: "drift" },
+    { title: "Brownian Motion Standard", key: "drift" },
     { title: "Geometric Brownian Motion", key: "geometric" },
     { title: "Ornstein-Uhlenbeck Process", key: "ornstein" },
   ];
@@ -106,9 +105,6 @@ function BrownianMotionPage() {
       switch (application) {
         case "drift":
           simulationResults = simulateWithDrift(inputs);
-          break;
-        case "noDrift":
-          simulationResults = simulateWithoutDrift(inputs);
           break;
         case "ornstein":
           simulationResults = simulateOrnsteinUhlenbeck(inputs);
@@ -170,7 +166,7 @@ function BrownianMotionPage() {
       </div>
 
       <div className="max-w-4xl mx-auto text-center mt-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {applications.map((app) => (
             <button
               key={app.key}

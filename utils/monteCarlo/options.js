@@ -8,7 +8,6 @@ function randomNormal() {
 function mean(array) {
   return array.reduce((a, b) => a + b, 0) / array.length;
 }
-
 export default function monteCarloOptions(inputs) {
   const {
     stockPrice,
@@ -16,36 +15,57 @@ export default function monteCarloOptions(inputs) {
     riskFreeRate, // in %
     volatility, // in %
     timeToMaturity, // in years
+    dividendYield, // in %
+    optionType, // "call" or "put"
     numSimulations = 1000,
   } = inputs;
 
-  const optionPayoffs = [];
+  const callPayoffs = [];
+  const putPayoffs = [];
   const trajectories = [];
+  const finalPrices = [];
 
   for (let i = 0; i < numSimulations; i++) {
     const z = randomNormal();
     const drift =
-      (riskFreeRate / 100 - 0.5 * (volatility / 100) ** 2) * timeToMaturity;
+      (riskFreeRate / 100 -
+        dividendYield / 100 -
+        0.5 * (volatility / 100) ** 2) *
+      timeToMaturity;
     const shock = (volatility / 100) * Math.sqrt(timeToMaturity) * z;
 
     const endStockPrice = stockPrice * Math.exp(drift + shock);
-    const payoff = Math.max(endStockPrice - strikePrice, 0);
+    finalPrices.push(endStockPrice);
 
-    optionPayoffs.push(payoff);
-    // Keep a mini trajectory: start and end
+    // Calculate payoffs for call and put options
+    const callPayoff = Math.max(endStockPrice - strikePrice, 0);
+    const putPayoff = Math.max(strikePrice - endStockPrice, 0);
+
+    callPayoffs.push(callPayoff);
+    putPayoffs.push(putPayoff);
+
+    // Store the trajectory (start and end prices)
     trajectories.push([stockPrice, endStockPrice]);
   }
 
-  // Discount the mean payoff back to present value
-  const avgPayoff = mean(optionPayoffs);
+  // Discount the mean payoffs back to present value
   const discountFactor = Math.exp(-1 * (riskFreeRate / 100) * timeToMaturity);
-  const optionPrice = (avgPayoff * discountFactor).toFixed(2);
+  const callPrice = mean(callPayoffs) * discountFactor; // Remove .toFixed(2)
+  const putPrice = mean(putPayoffs) * discountFactor; // Remove .toFixed(2)
+
+  // Calculate the probability of the option being in the money (ITM)
+  const inTheMoneyProbability =
+    (finalPrices.filter((price) =>
+      optionType === "call" ? price > strikePrice : price < strikePrice
+    ).length /
+      numSimulations) *
+    100;
 
   return {
-    summary: {
-      "Option Price": optionPrice,
-    },
-    graph: {
+    callPrice,
+    putPrice,
+    inTheMoneyProbability: inTheMoneyProbability.toFixed(2),
+    pricePaths: {
       labels: ["Start", "End"],
       datasets: trajectories.slice(0, 10).map((data, idx) => ({
         label: `Simulation ${idx + 1}`,
@@ -54,5 +74,6 @@ export default function monteCarloOptions(inputs) {
         fill: false,
       })),
     },
+    priceDistribution: finalPrices,
   };
 }

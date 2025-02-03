@@ -28,9 +28,7 @@ export default function monteCarloInvestment(inputs) {
     const trajectory = [portfolio];
 
     for (let year = 1; year <= timeHorizon; year++) {
-      // If using a simple arithmetic model:
       const z = randomNormal();
-      // random shock around annualReturn
       const shock = (annualVolatility / 100) * z;
       portfolio *= 1 + (annualReturn / 100 + shock);
       portfolio += annualContribution;

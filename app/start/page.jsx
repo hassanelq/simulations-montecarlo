@@ -12,19 +12,33 @@ export default function StartPage() {
       icon: "🎲",
     },
     {
-      title: "Monte Carlo Simulation",
-      path: "/start/monteCarlo",
+      title: "Investment Simulation",
+      path: "/start/investment",
       description:
-        "Simulate random processes and analyze complex systems using Monte Carlo methods.",
+        "Simulate the growth of an investment portfolio over time, accounting for market volatility and annual contributions.",
       icon: "📊",
     },
     {
-      title: "Brownian Motion",
-      path: "/start/brownianMotion",
+      title: "Options Pricing",
+      path: "/start/options",
       description:
-        "Dive into stochastic processes and Brownian motion with interactive simulations.",
-      icon: "🌊",
+        "Estimate the fair value of financial options using the Monte Carlo method by simulating asset price paths.",
+      icon: "📊",
     },
+    // {
+    //   title: "Monte Carlo Simulation",
+    //   path: "/start/monteCarlo",
+    //   description:
+    //     "Simulate random processes and analyze complex systems using Monte Carlo methods.",
+    //   icon: "📊",
+    // },
+    // {
+    //   title: "Brownian Motion",
+    //   path: "/start/brownianMotion",
+    //   description:
+    //     "Dive into stochastic processes and Brownian motion with interactive simulations.",
+    //   icon: "🌊",
+    // },
   ];
 
   return (
