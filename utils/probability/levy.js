@@ -1,4 +1,4 @@
-import { processContinuousData } from "./stats";
+import { processContinuousData } from "./helper_functions";
 
 export default function simulateLevy({ alpha, gamma, N }) {
   if (alpha <= 0 || alpha > 2)
@@ -11,7 +11,7 @@ export default function simulateLevy({ alpha, gamma, N }) {
     const v = -Math.log(Math.random());
     const t = gamma / Math.cos(u / alpha) ** (1 / alpha);
     return (t * Math.sin(alpha * u)) / v ** ((1 - alpha) / alpha);
-  }).filter((value) => Math.abs(value) < 1e6); // Filter extreme values
+  }).filter((value) => Math.abs(value) < 1e6);
 
   const result = processContinuousData(
     rawData,

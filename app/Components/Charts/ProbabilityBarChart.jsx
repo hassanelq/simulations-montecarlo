@@ -19,7 +19,6 @@ const ProbabilityBarChart = ({
   // Register Chart.js and plugins on the client side
   const [chartReady, setChartReady] = useState(false);
 
-  // Updated chart registration in ProbabilityBarChart.jsx
   useEffect(() => {
     const loadChart = async () => {
       const {
@@ -119,6 +118,7 @@ const ProbabilityBarChart = ({
     if (n === 0.5) return Math.sqrt(Math.PI);
     return (n - 1) * gamma(n - 1);
   };
+
   // Theoretical PDF/PMF calculation
   const theoreticalPDF = labels.map((label) => {
     const x = parseFloat(label);

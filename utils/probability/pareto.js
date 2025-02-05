@@ -1,4 +1,4 @@
-import { processContinuousData } from "./stats";
+import { processContinuousData } from "./helper_functions";
 
 export default function simulatePareto({ alpha, xm, N }) {
   if (alpha <= 0) throw new Error("Shape parameter α must be > 0");
@@ -19,10 +19,10 @@ export default function simulatePareto({ alpha, xm, N }) {
     ...result.statistics,
     "Shape Parameter (α)": alpha.toFixed(4),
     "Scale Parameter (xₘ)": xm.toFixed(4),
-    // "Theoretical Mean": (alpha > 1
-    //   ? (alpha * xm) / (alpha - 1)
-    //   : Infinity
-    // ).toFixed(4),
+    "Theoretical Mean": (alpha > 1
+      ? (alpha * xm) / (alpha - 1)
+      : Infinity
+    ).toFixed(4),
   };
 
   return result;

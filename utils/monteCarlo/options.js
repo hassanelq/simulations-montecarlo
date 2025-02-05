@@ -50,8 +50,8 @@ export default function monteCarloOptions(inputs) {
 
   // Discount the mean payoffs back to present value
   const discountFactor = Math.exp(-1 * (riskFreeRate / 100) * timeToMaturity);
-  const callPrice = mean(callPayoffs) * discountFactor; // Remove .toFixed(2)
-  const putPrice = mean(putPayoffs) * discountFactor; // Remove .toFixed(2)
+  const callPrice = mean(callPayoffs) * discountFactor;
+  const putPrice = mean(putPayoffs) * discountFactor;
 
   // Calculate the probability of the option being in the money (ITM)
   const inTheMoneyProbability =

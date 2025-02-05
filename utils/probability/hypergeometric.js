@@ -1,10 +1,10 @@
-import { processDiscreteData } from "./stats";
+import { processDiscreteData } from "./helper_functions";
 
 export default function simulateHypergeometric({
   K,
   N: populationSize,
   n: sampleSize,
-  simulations,
+  N_simulations,
 }) {
   if (K > populationSize)
     throw new Error("Success states (K) cannot exceed population size");
@@ -13,7 +13,7 @@ export default function simulateHypergeometric({
   if (K < 0 || populationSize < 0 || sampleSize < 0)
     throw new Error("Parameters cannot be negative");
 
-  const rawData = Array.from({ length: simulations }, () => {
+  const rawData = Array.from({ length: N_simulations }, () => {
     const population = [
       ...Array(K).fill(1),
       ...Array(populationSize - K).fill(0),
@@ -37,7 +37,7 @@ export default function simulateHypergeometric({
     "Population Successes": K,
     "Population Size": populationSize,
     "Sample Size": sampleSize,
-    // "Theoretical Mean": ((K * sampleSize) / populationSize).toFixed(4),
+    "Theoretical Mean": ((K * sampleSize) / populationSize).toFixed(4),
   };
 
   return result;

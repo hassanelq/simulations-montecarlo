@@ -1,4 +1,4 @@
-import { processContinuousData } from "./stats";
+import { processContinuousData } from "./helper_functions";
 
 export default function simulateExponential({ lambda, N }) {
   // Parameter validation
@@ -12,12 +12,12 @@ export default function simulateExponential({ lambda, N }) {
 
   const result = processContinuousData(rawData, `Exponential (λ=${lambda})`);
 
-  // Add exponential-specific statistics
+  // exponential-specific statistics
   result.statistics = {
     ...result.statistics,
     "Rate Parameter (λ)": lambda.toFixed(4),
-    // "Theoretical Mean": (1 / lambda).toFixed(4),
-    // "Theoretical Variance": (1 / lambda ** 2).toFixed(4),
+    "Theoretical Mean": (1 / lambda).toFixed(4),
+    "Theoretical Variance": (1 / lambda ** 2).toFixed(4),
   };
 
   return result;

@@ -1,7 +1,6 @@
-import { mean, standardDeviation, median, processDiscreteData } from "./stats";
+import { processDiscreteData } from "./helper_functions";
 
 export default function simulateBinomial({ n, p, N }) {
-  // Parameter validation
   if (p < 0 || p > 1) throw new Error("Probability p must be between 0 and 1");
   if (n <= 0 || !Number.isInteger(n))
     throw new Error("Number of trials must be a positive integer");
@@ -16,13 +15,13 @@ export default function simulateBinomial({ n, p, N }) {
 
   const result = processDiscreteData(rawData, `Binomial (n=${n}, p=${p})`);
 
-  // Add binomial-specific statistics
+  // binomial-specific statistics
   result.statistics = {
     ...result.statistics,
     "Number of Trials": n,
     "Success Probability": p.toFixed(4),
-    // "Theoretical Mean": (n * p).toFixed(4),
-    // "Theoretical Variance": (n * p * (1 - p)).toFixed(4),
+    "Theoretical Mean": (n * p).toFixed(4),
+    "Theoretical Variance": (n * p * (1 - p)).toFixed(4),
   };
 
   return result;

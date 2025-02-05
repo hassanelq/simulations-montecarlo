@@ -47,9 +47,9 @@ export default function StartPage() {
         Choose a Simulation
       </h1>
       <p className="text-lg text-gray-600 mb-12 max-w-2xl text-center">
-        Explore our advanced simulation tools, including probability laws, Monte
-        Carlo methods, and Brownian motion. Each simulation is designed to help
-        you understand complex concepts through interactive visualizations.
+        Explore our simulation tools, using Monte Carlo methods. Each simulation
+        is designed to help you understand complex concepts through interactive
+        visualizations.
       </p>
       <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-4xl">
         {simulations.map((sim, index) => (

@@ -1,4 +1,4 @@
-import { processContinuousData } from "./stats";
+import { processContinuousData } from "./helper_functions";
 
 export default function simulateUniform({ a, b, N }) {
   if (a >= b) throw new Error("Start (a) must be less than end (b)");
@@ -9,8 +9,8 @@ export default function simulateUniform({ a, b, N }) {
 
   result.statistics = {
     ...result.statistics,
-    // "Theoretical Mean": ((a + b) / 2).toFixed(4),
-    // "Theoretical Variance": ((b - a) ** 2 / 12).toFixed(4),
+    "Theoretical Mean": ((a + b) / 2).toFixed(2),
+    "Theoretical Variance": ((b - a) ** 2 / 12).toFixed(2),
   };
 
   return result;

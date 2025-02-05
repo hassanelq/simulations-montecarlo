@@ -1,4 +1,4 @@
-import { processContinuousData, sampleGamma } from "./stats";
+import { processContinuousData } from "./helper_functions";
 
 export default function simulateWeibull({ lambda, k, N }) {
   if (lambda <= 0) throw new Error("Scale parameter λ must be > 0");
