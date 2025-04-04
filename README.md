@@ -24,17 +24,3 @@ Welcome to the Financial Simulation Platform, a powerful and interactive tool de
 - **Ornstein-Uhlenbeck Process**
 
 ---
-
-# **Setup Instructions**
-
-## **Prerequisites**
-- **Node.js** (v14 or higher)
-- **npm** or **yarn**
-
-## **Installation**
-
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/your-username//Simulations-MC-BrownMotion.git
-   cd financial-simulation-platform
-   ```
